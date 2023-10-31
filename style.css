@@ -1,0 +1,90 @@
+header, div {
+    display: flex;
+}
+header {
+    flex-direction: row;
+    justify-content: space-around;
+    align-items: center;
+    background-color: grey;
+}
+
+header img {
+    width: 15%;
+}
+
+#bestMovie {
+    flex-direction: row;
+    justify-content: space-around;
+    background-color: red;
+    align-items: center;
+    overflow: hidden;
+    padding: 3%;
+}
+
+#bestMovie img {
+    transform: scale(2.5, 2.5);
+}
+
+.title-btn {
+    padding-left: 15%;
+    flex-direction: column;
+}
+
+.title-btn button {
+    background-color: blue;
+    color: white;
+    padding: 15px 32px;
+    text-align: center;
+    text-decoration: none;
+    display: inline-block;
+    font-size: 16px;
+  }
+
+
+.cat {
+    flex-direction: column;
+    margin: 1%;
+    background-color: aqua;
+    text-align: center;
+}
+
+.cat h2 {
+    display: block;
+    margin-bottom: 10px;
+}
+
+.box {
+    justify-content: space-around;
+    padding: 2%;
+}
+
+
+
+#carrousel {
+    justify-content: center;
+    border: solid 4px #fff;
+    box-shadow:0 0 14px rgba(0, 0, 0, 0.3);
+    position: relative;
+}
+
+.bouton {
+    position: absolute;
+    width: 70px;
+    cursor: pointer;
+    top: 100px;
+}
+#g{
+    left: 0;
+    opacity: 0.4;
+    transition: all 0.3s ease;
+}
+#d{
+    right: 0;
+    opacity: 0.4;
+    transition: all 0.3s ease;
+}
+#g:hover, #d:hover{
+    transform: scale(1.1);
+    opacity: 1;
+    transition: all 0.3s ease;
+}

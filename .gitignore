@@ -1,0 +1,11 @@
+# Environments
+env/
+.env
+.venv
+venv/
+ENV/
+env.bak/
+venv.bak/
+
+#API
+OCMovies-API-EN-FR/
