@@ -30,33 +30,27 @@ function fetchMoviesWithDirector(director, url) {
 }
 
 function filterBestMoviesWithDirector(minScore) {
-    // Filtrer les films ayant un score IMDb de plus de minScore.
-    var filteredMovies = goodMovies.filter(function(movie) {
-        return movie.imdb_score > minScore;
-    });
-
     // Triez les films par score IMDb de manière décroissante.
-    filteredMovies.sort(function(a, b) {
+    goodMovies.sort(function(a, b) {
         return b.imdb_score - a.imdb_score;
     });
 
     // Mettez à jour la div "bestMovies" avec les 7 films.
-    if (filteredMovies.length > 1) {
-        updateMoviesDiv(filteredMovies.slice(0, 7));
+    if (goodMovies.length > 1) {
+        updateMoviesDiv(goodMovies.slice(0, 7));
     }
 }
 
 function updateMoviesDiv(movies) {
-    var carrouselContainer = document.querySelector("#director #carrousel-container");
+    var carrouselContainer = document.getElementById("director-container");
     var htmlContent = '<h2>Films de Christopher Nolan</h2><ul>';
     for (var i = 0; i < movies.length; i++) {
-        // Ajoutez l'image du film à carrousel-container.
+        // Ajoutez l'image du film à director-container.
         htmlContent += '<img src="' + movies[i].image_url + '" alt="' + movies[i].title + '">';
     }
     htmlContent += '</ul>';
     carrouselContainer.innerHTML = htmlContent; // Mettez à jour le contenu de la div avec le nouveau contenu.
 }
 
-
-// Lancez la récupération des films avec un score minimum de 9.
+// Lancez la récupération des films avec Nolan comme realisateur.
 fetchMoviesWithDirector('nolan');

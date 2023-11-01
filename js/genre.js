@@ -1,12 +1,8 @@
+var goodMovies = []; // Liste globale pour stocker les meilleurs films.
 
-//  NE MARCHE PAS -> rien ne s'affiche
-
-var goodGenre = []; // Liste globale pour stocker les meilleurs films.
-minScore = 7
-
-function fetchMoviesWithGenre(genre, url) {
+function fetchMoviesWithGenre(minYear, genre, url) {
     // Utilisez l'URL fournie ou l'URL de base si elle n'est pas fournie.
-    url = url || 'http://localhost:8000/api/v1/genres/?name_contains=' + genre;
+    url = url || 'http://localhost:8000/api/v1/titles/?min_year=' + minYear + '&genre=' + genre;
 
     var xhr = new XMLHttpRequest();
     xhr.open('GET', url, true);
@@ -16,14 +12,14 @@ function fetchMoviesWithGenre(genre, url) {
             var movies = responseData.results;
 
             // Ajoutez les films de cette page à la liste globale.
-            goodGenre = goodGenre.concat(movies);
+            goodMovies = goodMovies.concat(movies);
 
             if (responseData.next) {
                 // Si la page suivante existe, effectuez une nouvelle requête.
-                fetchMoviesWithGenre(genre, responseData.next);
+                fetchMoviesWithGenre(minYear, genre, responseData.next);
             } else {
                 // Toutes les pages ont été récupérées, filtrez les meilleurs films.
-                filterBestMoviesinGenre(minScore);
+                filterBestMoviesWithGenre();
             }
         } else {
             console.log('Erreur de requête : ' + xhr.status);
@@ -32,35 +28,28 @@ function fetchMoviesWithGenre(genre, url) {
     xhr.send();
 }
 
-function filterBestMoviesinGenre(minScore) {
-    // Filtrer les films ayant un score IMDb de plus de minScore.
-    var filteredMovies = goodGenre.filter(function(movie) {
-        return movie.imdb_score > minScore;
-    });
-
+function filterBestMoviesWithGenre() {
     // Triez les films par score IMDb de manière décroissante.
-    filteredMovies.sort(function(a, b) {
+    goodMovies.sort(function(a, b) {
         return b.imdb_score - a.imdb_score;
     });
 
-
-    // Mettez à jour la div "animation" avec les 7 films.
-    if (filteredMovies.length > 1) {
-        updateGenreDiv(filteredMovies.slice(0, 7));
+    // Mettez à jour la div "bestMovies" avec les 7 films.
+    if (goodMovies.length > 1) {
+        updateMoviesDiv(goodMovies.slice(0, 7));
     }
 }
 
-function updateGenreDiv(movies) {
-    var carrouselContainer = document.getElementById("carrousel-container"); // Div pour les images.
-    var htmlContent = '<ul>';
+function updateMoviesDiv(movies) {
+    var carrouselContainer = document.getElementById("genre-container");
+    var htmlContent = '<h2>Films d\'animation</h2><ul>';
     for (var i = 0; i < movies.length; i++) {
-        // Ajoutez l'image du film à carrousel-container.
-        htmlContent += '<li><img src="' + movies[i].image_url + '" alt="' + movies[i].title + '"></li>';
+        // Ajoutez l'image du film à genre-container.
+        htmlContent += '<img src="' + movies[i].image_url + '" alt="' + movies[i].title + '">';
     }
     htmlContent += '</ul>';
     carrouselContainer.innerHTML = htmlContent; // Mettez à jour le contenu de la div avec le nouveau contenu.
 }
 
-
-// Lancez la récupération des films avec un score minimum de 9.
-fetchMoviesWithGenre('animation');
+// Lancez la récupération des films d'animation sortie après 2020.
+fetchMoviesWithGenre(2020, 'animation');

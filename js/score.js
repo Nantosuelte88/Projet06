@@ -61,7 +61,7 @@ function updateBestMovieDiv(movie) {
 
 function updateBestMoviesDiv(movies) {
     var bestMoviesDiv = document.getElementById("bestMovies");
-    var carrouselContainer = document.getElementById("carrousel-container"); // Div pour les images.
+    var carrouselContainer = document.getElementById("bestMovies-container"); // Div pour les images.
     var htmlContent = '<h2>Films les mieux notés</h2><ul>';
     for (var i = 0; i < movies.length; i++) {
         // Ajoutez l'image du film à carrousel-container.
