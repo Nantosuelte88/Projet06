@@ -1,3 +1,20 @@
+function createCarouselImages(topMovies) {
+    var carrouselContainer = document.getElementById('carrousel-container');
+    var carrouselImages = carrouselContainer.querySelectorAll('img');
+    var maxImages = 7;
+
+    topMovies.slice(0, maxImages).forEach(function (film, index) {
+        if (index < maxImages && carrouselImages[index]) {
+            var img = carrouselImages[index]; // Récupérez l'image existante dans le carrousel
+            img.src = film.image_url;
+            img.setAttribute('data-movie-index', index);
+        } else {
+            return; // Sortir de la boucle forEach une fois que 7 images ont été ajoutées
+        }
+    });
+}
+
+
 function fetchAllMovies(url) {
     var xhr = new XMLHttpRequest();
     xhr.open('GET', url, true);
@@ -7,15 +24,10 @@ function fetchAllMovies(url) {
             var films = responseData.results;
 
             // Choix du meilleur film
-            var bestMovie = bestMovies(films)
+            var topMovies = bestMovies(films);
 
-            if (bestMovie) {
-                var baliseBestMovie = document.getElementById("bestMovie");
-                var h1 = baliseBestMovie.querySelector("h1");
-                var img = baliseBestMovie.querySelector("img");
-
-                h1.textContent = bestMovie.title; // Met le titre comme texte de h1
-                img.src = bestMovie.image_url; // Remplace la source de l'image
+            if (topMovies.length > 0) {
+                createCarouselImages(topMovies);
             }
 
             if (responseData.next) {
@@ -29,84 +41,14 @@ function fetchAllMovies(url) {
 }
 
 function bestMovies(films) {
-    var bestMovie = null;
-    var highestImdbScore = 0;
-
-    films.forEach(function(film) {
-        if (film.imdb_score >= 9.4) {
-            if (film.imdb_score > highestImdbScore) {
-                bestMovie = film;
-                highestImdbScore = film.imdb_score;
-            }
-        }
-    });
-    return bestMovie
+    return films
+        .filter(function(film) {
+            return film.imdb_score >= 9.4;
+        })
+        .sort(function(a, b) {
+            return b.imdb_score - a.imdb_score;
+        })
+        .slice(0, 7); // Sélectionnez uniquement les 7 meilleurs films
 }
 
 fetchAllMovies('http://localhost:8000/api/v1/titles');
-
-
-
-
-
-
-
-
-
-//
-// var films = responseData.results;
-    
-// var filmList = document.getElementById('film-list');
-
-// films.forEach(function(film) {
-//     if (film.imdb_score >=8.5) {
-//         var div = document.createElement('div');
-//         var p = document.createElement('p');
-//         p.textContent = film.title + ' ' + film.imdb_score;
-//         div.appendChild(p)
-//         filmList.appendChild(div);
-//     }
-// });
-// if (responseData.next) {
-//     fetchAllMovies(responseData.next)
-// }
-
-
-
-// let contenuTitre = "Azertype"
-//let contenuParagraphe = "L'application pour apprendre à taper plus vite !"
-
-//let div = `
-//    <div>
-//         <h1>${contenuTitre}</h1>
-//         <p>${contenuParagraphe}</p>
-//     </div>
-//     `;
-
-// let body = document.querySelector("body")
-// body.innerHTML = div
-
-
-// var xhr = new XMLHttpRequest();
-// xhr.open('GET', 'http://localhost:8000/api/v1/titles', true); // Le troisième paramètre est true pour une requête asynchrone
-// xhr.onload = function() {
-//   if (xhr.status === 200) {
-//     var data = JSON.parse(xhr.responseText);
-//     // Traitez les données ici
-//     var filmList = document.getElementById('film-list');
-//     let contenuParagraphe = data('title')
-        
-//     let div = `
-//         <div>
-//             <p>${contenuParagraphe}</p>
-//         </div>
-//         `;
-
-//     let body = document.querySelector("body")
-//     body.innerHTML = div
-//   } else {
-//     console.log('Erreur de requête : ' + xhr.status);
-//   }
-// };
-// xhr.send();
-// // Le script continue à s'exécuter ici sans attendre la réponse du serveur.

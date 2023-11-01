@@ -9,3 +9,6 @@ venv.bak/
 
 #API
 OCMovies-API-EN-FR/
+
+design/
+test.js
