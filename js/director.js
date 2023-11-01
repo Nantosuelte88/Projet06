@@ -1,4 +1,4 @@
-var goodMovies = []; // Liste globale pour stocker les meilleurs films.
+var goodMoviesDirector = []; // Liste globale pour stocker les meilleurs films.
 var minScore = 7
 
 function fetchMoviesWithDirector(director, url) {
@@ -13,7 +13,7 @@ function fetchMoviesWithDirector(director, url) {
             var movies = responseData.results;
 
             // Ajoutez les films de cette page à la liste globale.
-            goodMovies = goodMovies.concat(movies);
+            goodMoviesDirector = goodMoviesDirector.concat(movies);
 
             if (responseData.next) {
                 // Si la page suivante existe, effectuez une nouvelle requête.
@@ -30,18 +30,24 @@ function fetchMoviesWithDirector(director, url) {
 }
 
 function filterBestMoviesWithDirector(minScore) {
+    // Filtrer les films ayant un score IMDb de plus de minScore.
+    var filteredMovies = goodMoviesDirector.filter(function(movie) {
+        return movie.imdb_score > minScore;
+    });
+
     // Triez les films par score IMDb de manière décroissante.
-    goodMovies.sort(function(a, b) {
+    filteredMovies.sort(function(a, b) {
         return b.imdb_score - a.imdb_score;
     });
 
     // Mettez à jour la div "bestMovies" avec les 7 films.
-    if (goodMovies.length > 1) {
-        updateMoviesDiv(goodMovies.slice(0, 7));
+    if (filteredMovies.length > 1) {
+        updateMoviesDivDirector(filteredMovies.slice(0, 7));
     }
 }
 
-function updateMoviesDiv(movies) {
+function updateMoviesDivDirector(movies) {
+    var bestMoviesDivDirector= document.getElementById("director");
     var carrouselContainer = document.getElementById("director-container");
     var htmlContent = '<h2>Films de Christopher Nolan</h2><ul>';
     for (var i = 0; i < movies.length; i++) {
@@ -49,7 +55,9 @@ function updateMoviesDiv(movies) {
         htmlContent += '<img src="' + movies[i].image_url + '" alt="' + movies[i].title + '">';
     }
     htmlContent += '</ul>';
-    carrouselContainer.innerHTML = htmlContent; // Mettez à jour le contenu de la div avec le nouveau contenu.
+    bestMoviesDivDirector.innerHTML = htmlContent; // Mettez à jour le contenu de la div avec le nouveau contenu.
+
+    carrouselContainer.innerHTML = htmlContent;
 }
 
 // Lancez la récupération des films avec Nolan comme realisateur.

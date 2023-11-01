@@ -36,11 +36,12 @@ function filterBestMoviesWithGenre() {
 
     // Mettez à jour la div "bestMovies" avec les 7 films.
     if (goodMovies.length > 1) {
-        updateMoviesDiv(goodMovies.slice(0, 7));
+        updateMoviesGenreDiv(goodMovies.slice(0, 7));
     }
 }
 
-function updateMoviesDiv(movies) {
+function updateMoviesGenreDiv(movies) {
+    var bestMoviesDivGenre = document.getElementById("genre");
     var carrouselContainer = document.getElementById("genre-container");
     var htmlContent = '<h2>Films d\'animation</h2><ul>';
     for (var i = 0; i < movies.length; i++) {
@@ -48,7 +49,9 @@ function updateMoviesDiv(movies) {
         htmlContent += '<img src="' + movies[i].image_url + '" alt="' + movies[i].title + '">';
     }
     htmlContent += '</ul>';
-    carrouselContainer.innerHTML = htmlContent; // Mettez à jour le contenu de la div avec le nouveau contenu.
+    bestMoviesDivGenre.innerHTML = htmlContent; // Mettez à jour le contenu de la div avec le nouveau contenu.
+
+    carrouselContainer.innerHTML = htmlContent;
 }
 
 // Lancez la récupération des films d'animation sortie après 2020.
