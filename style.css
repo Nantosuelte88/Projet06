@@ -15,7 +15,7 @@ header img {
 #bestMovie {
     flex-direction: row;
     justify-content: space-around;
-    background-color: red;
+    background-color: #2F494B;
     align-items: center;
     overflow: hidden;
     padding: 3%;
@@ -31,7 +31,7 @@ header img {
 }
 
 .title-btn button {
-    background-color: blue;
+    background-color: #999999;
     color: white;
     padding: 15px 32px;
     text-align: center;
@@ -44,7 +44,7 @@ header img {
 .cat {
     flex-direction: column;
     margin: 1%;
-    background-color: aqua;
+    background-color: #579898;
     text-align: center;
 }
 
