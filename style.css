@@ -44,6 +44,9 @@ header img {
 padding-top: 102px;
 }
 
+.carrousel {
+    width: 100%;
+}
 
 #bestMovie {
     flex-direction: row;
@@ -101,7 +104,7 @@ padding-top: 102px;
 }
 
 .bouton {
-    position: absolute;
+    /* position: absolute; */
     width: 70px;
     cursor: pointer;
     top: 100px;

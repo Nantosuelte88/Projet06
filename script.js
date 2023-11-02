@@ -7,8 +7,6 @@ function fetchMovies(nbrMovies, url, listMovies) {
                 var responsaData = JSON.parse(xhr.responseText);
                 var movies = responsaData.results;
 
-                console.log('Films dans fonction API', listMovies);
-
                 listMovies.push(...movies);
 
                 if (responsaData.next) {
@@ -26,11 +24,34 @@ function fetchMovies(nbrMovies, url, listMovies) {
     });
 }
 
+function displayMoviePoster(movies, id) {
+    var moviesDiv = document.getElementById(id);
+    var htmlContent = '<ul>';
+    for (var i = 0; i < movies.length; i++) {
+        htmlContent += '<img src="' + movies[i].image_url + '" alt="' + movies[i].title + '">';
+    }
+    htmlContent += '</ul>';
+    moviesDiv.innerHTML = htmlContent;
+
+}
+
 // Les 8 meilleurs films [LE meilleur + les 7 suivants] -> faire fonction pour prendre le meilleur d'entre eux
 async function getBestMovies() {
     try {
-        const bestMovies = await fetchMovies(8, 'http://localhost:8000/api/v1/titles/?imdb_score_min=9.3&sort_by=-imdb_score', []);
-        return bestMovies;
+        const allBestMovies = await fetchMovies(8, 'http://localhost:8000/api/v1/titles/?imdb_score_min=9.3&sort_by=-imdb_score', []);
+        
+        // Creation du h1 , du bouton et de l'image du meilleur film
+        var bestMovie = allBestMovies[0] 
+        var bestMovieDiv = document.getElementById("bestMovie");
+        var h1 = '<h1>' + bestMovie.title + '</h1>';
+        var btn = '<button>Play</button>';
+        var imageBestMovie = '<img src="' + bestMovie.image_url + ' alt="' + bestMovie.title + '"></img>';
+
+        htmlContent = h1 + btn + imageBestMovie;
+        bestMovieDiv.innerHTML = htmlContent;
+
+        // Creation des 7 films suivants dans la categorie "Meilleurs films"
+        displayMoviePoster(allBestMovies.slice(1, 8), 'bestMovies')
     } catch (error) {
         throw error;
     }
@@ -41,7 +62,7 @@ async function getBestMovies() {
 async function getMoviesByGenre() {
     try {
         const moviesByGenre = await fetchMovies(7, 'http://localhost:8000/api/v1/titles/?min_year=2020&genre=animation&sort_by=-imdb_score', []);
-        return moviesByGenre;
+        displayMoviePoster(moviesByGenre, 'genre');
     } catch (error) {
         throw error;
     }
@@ -52,7 +73,7 @@ async function getMoviesByGenre() {
 async function getMoviesByDirector() {
     try {
         const moviesByDirector = await fetchMovies(7, 'http://localhost:8000/api/v1/titles/?director_contains=Nolan&imdb_score_min=7&sort_by=-imdb_score', []);
-        return moviesByDirector;
+        displayMoviePoster(moviesByDirector, 'director');
     } catch (error) {
         throw error;
     }
@@ -63,25 +84,27 @@ async function getMoviesByDirector() {
 async function getMoviesByCountry() {
     try {
         const moviesByCountry = await fetchMovies(7, 'http://localhost:8000/api/v1/titles/?min_year=2019&genre_contains=drama&country_contains=korea&sort_by=-imdb_score', []);
-        return moviesByCountry;
+        displayMoviePoster(moviesByCountry, 'country');
     } catch (error) {
         throw error;
     }
 }
 
+
+
 async function main() {
     try {
         const bestMovies = await getBestMovies();
-        console.log('Meilleurs films:', bestMovies);
+        // console.log('Meilleurs films:', bestMovies);
 
         const moviesByGenre = await getMoviesByGenre();
-        console.log('Films d\'animation', moviesByGenre);
+        // console.log('Films d\'animation', moviesByGenre);
 
         const moviesByDirector = await getMoviesByDirector();
-        console.log('Films de Nolan:', moviesByDirector);
+        // console.log('Films de Nolan:', moviesByDirector);
 
         const moviesByCountry = await getMoviesByCountry();
-        console.log('Les meilleurs dramas coréens', moviesByCountry)
+        // console.log('Les meilleurs dramas coréens', moviesByCountry)
     } catch (error) {
         console.error(error);
     }

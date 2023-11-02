@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Document</title>
     <link rel="stylesheet" href="style.css">
-    <script src="js/script.js" defer></script>
+    <script src="script.js" defer></script>
     <!-- <script src="js/score.js" defer></script> -->
     <!-- <script src="js/genre.js" defer></script> -->
     <!-- <script src="js/director.js" defer></script> -->
@@ -22,55 +22,36 @@
     </header>
 
     <main>
-        <div id="bestMovie">
-            <div class="title-btn">
-                <h1>Film</h1>
-            </div>
-            <div>
-                <img src="data/base_movie.jpg" alt="">
-            </div>
-    
+        <div id="bestMovie"></div>
+
+
+        <div class="cat">
+            <img src="data/fleche-gauche.png" class="bouton" id="g">
+            <h2>Les Meilleurs films</h2>
+            <div id="bestMovies"></div>
+            <img src="data/fleche-droite.png" class="bouton" id="d">
         </div>
 
-        <div id="bestMovies" class="cat">
-            <div id="carrousel">
-                <img src="data/fleche-gauche.png" class="bouton" id="g">
-                <div class="box" id="bestMovies-container">
-                </div>
-                <img src="data/fleche-droite.png" class="bouton" id="d">
-            </div>
+        <div class="cat">
+            <img src="data/fleche-gauche.png" class="bouton" id="g">
+            <h2>Films d'animation</h2>
+            <div id="genre"></div>
+            <img src="data/fleche-droite.png" class="bouton" id="d">
         </div>
 
-        <div id="genre" class="cat">
-            <div id="carrousel">
-                <img src="data/fleche-gauche.png" class="bouton" id="g">
-                <div class="box" id="genre-container">
-                </div>
-                <img src="data/fleche-droite.png" class="bouton" id="d">
-            </div>
-
+        <div class="cat">
+            <img src="data/fleche-gauche.png" class="bouton" id="g">
+            <h2>Films de Christopher Nolan</h2>
+            <div id="director"></div>
+            <img src="data/fleche-droite.png" class="bouton" id="d">
         </div>
 
-        <div id="director" class="cat">
-            <div id="carrousel">
-                <img src="data/fleche-gauche.png" class="bouton" id="g">
-                <div class="box" id="director-container">
-                </div>
-                <img src="data/fleche-droite.png" class="bouton" id="d">
-            </div>
-
+        <div class="cat">
+            <img src="data/fleche-gauche.png" class="bouton" id="g">
+            <h2>Dramas Coréens</h2>
+            <div id="country"></div>
+            <img src="data/fleche-droite.png" class="bouton" id="d">
         </div>
-
-        <div id="country" class="cat">
-            <div id="carrousel">
-                <img src="data/fleche-gauche.png" class="bouton" id="g">
-                <div class="box" id="country-container">
-                </div>
-                <img src="data/fleche-droite.png" class="bouton" id="d">
-            </div>
-
-        </div>
-
 
     </main>
 
