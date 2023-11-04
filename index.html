@@ -5,15 +5,13 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Document</title>
     <link rel="stylesheet" href="style.css">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins&display=swap" rel="stylesheet">
     <script src="script.js" defer></script>
-    <!-- <script src="js/score.js" defer></script> -->
-    <!-- <script src="js/genre.js" defer></script> -->
-    <!-- <script src="js/director.js" defer></script> -->
-    <!-- <script src="js/country.js" defer></script> -->
 </head>
 <body>
 
-    <header id="myHeader">
+    <header id="myHeader" class="sticky">
         <img src="data/16004298163529_P5.png" alt="Logo de JustStreamIt"/>
         <div>
             <p>Accueil</p>
@@ -25,33 +23,36 @@
         <div id="bestMovie"></div>
 
 
-        <div class="cat">
-            <img src="data/fleche-gauche.png" class="bouton" id="g">
+        <div class="box">
             <h2>Les Meilleurs films</h2>
-            <div id="bestMovies"></div>
-            <img src="data/fleche-droite.png" class="bouton" id="d">
+            <div class="carousel">
+                <div id="bestMovies" class="slides-container"></div>
+            </div>
+            <button class="prev">Précédent</button>
+            <button class="next">Suivant</button>
         </div>
 
-        <div class="cat">
-            <img src="data/fleche-gauche.png" class="bouton" id="g">
+
+        <!-- <div class="carousel">
             <h2>Films d'animation</h2>
             <div id="genre"></div>
-            <img src="data/fleche-droite.png" class="bouton" id="d">
+            <img src="data/fleche-gauche.png" class="arrow-left" id="g2">
+            <img src="data/fleche-droite.png" class="arrow-right" id="d2">
         </div>
 
-        <div class="cat">
-            <img src="data/fleche-gauche.png" class="bouton" id="g">
+        <div class="carousel">
             <h2>Films de Christopher Nolan</h2>
             <div id="director"></div>
-            <img src="data/fleche-droite.png" class="bouton" id="d">
+            <img src="data/fleche-gauche.png" class="arrow-left" id="g3">
+            <img src="data/fleche-droite.png" class="arrow-right" id="d3">
         </div>
 
-        <div class="cat">
-            <img src="data/fleche-gauche.png" class="bouton" id="g">
+        <div class="carousel">
             <h2>Dramas Coréens</h2>
             <div id="country"></div>
-            <img src="data/fleche-droite.png" class="bouton" id="d">
-        </div>
+            <img src="data/fleche-gauche.png" class="arrow-left" id="g4">
+            <img src="data/fleche-droite.png" class="arrow-right" id="d4">
+        </div> -->
 
     </main>
 

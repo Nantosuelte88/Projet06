@@ -10,7 +10,6 @@ header {
     flex-direction: row;
     align-items: center;
     background-color: rgba(47, 73, 75, 0.9);
-    margin: 5px;
     padding: 5px;
 }
 
@@ -30,7 +29,7 @@ header img {
     margin-left: 5%;
 }
 
-.content {
+/* .content {
     padding: 16px;
   }
 
@@ -42,11 +41,7 @@ header img {
 
 .sticky + .content {
 padding-top: 102px;
-}
-
-.carrousel {
-    width: 100%;
-}
+} */
 
 #bestMovie {
     flex-direction: row;
@@ -55,72 +50,138 @@ padding-top: 102px;
     align-items: center;
     overflow: hidden;
     padding: 3%;
+    margin: 20px 5px;
+}
+
+#bestMovie h1 {
+    font-family: 'Poppins', sans-serif;
+    color: #fff;
 }
 
 #bestMovie img {
     transform: scale(2.5, 2.5);
 }
 
-.title-btn {
-    padding-left: 15%;
+#bestMovie div {
     flex-direction: column;
 }
 
-.title-btn button {
-    background-color: #999999;
-    color: white;
-    padding: 15px 32px;
+/* #bestMovie button {
+    display: inline-block;
+    padding: 12px 24px;
+    font-size: 16px;
+    font-weight: bold;
     text-align: center;
     text-decoration: none;
-    display: inline-block;
-    font-size: 16px;
-  }
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+  } */
+
+/* button.default {
+    background-color: #3498db;
+    color: #fff;
+}
+
+button.default:hover {
+    background-color: #2980b9;
+} */
 
 
-.cat {
+
+/* Les differentes categories de films */
+
+/* .carousel {
     flex-direction: column;
     margin: 1%;
     background-color: #579898;
     text-align: center;
+    justify-content: center;
 }
 
-.cat h2 {
+.carousel h2 {
     display: block;
     margin-bottom: 10px;
-}
+} */
+
+
 
 .box {
-    justify-content: space-around;
-    padding: 2%;
+    flex-direction: column;
+}
+
+.box h2 {
+    color: white;
 }
 
 
+.box {
+    display: flex;
+    overflow: hidden;
+    padding: 10px;
+    margin: 0 auto;
+    background-color: rgba(128, 128, 128, 0.3); /* Gris avec une opacité de 0.5 (50%) */
 
-#carrousel {
+
+  }
+  
+  .slides-container {
+    display: flex;
+    transition: transform 0.5s ease-in-out;
+  }
+  
+  .slide {
     justify-content: center;
-    border: solid 4px #fff;
-    box-shadow:0 0 14px rgba(0, 0, 0, 0.3);
-    position: relative;
+    flex: 0 0 23%;
+    padding: 8px;
+    box-sizing: border-box;
+    text-align: center;
+    overflow: hidden;
+  }
+  
+.slide img {
+    width: 110%;
+    padding: 5px;
 }
 
-.bouton {
-    /* position: absolute; */
+  button {
+    cursor: pointer;
+    background-color: #3498db;
+    color: #fff;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 5px;
+    margin: 10px;
+    font-size: 16px;
+    transition: background-color 0.3s;
+  }
+  
+  button:hover {
+    background-color: #0077b6;
+  }
+  
+
+
+
+
+/* .arrow-left, .arrow-right {
+    position: absolute;
     width: 70px;
     cursor: pointer;
     top: 100px;
 }
-#g{
+.arrow-left{
     left: 0;
     opacity: 0.4;
     transition: all 0.3s ease;
 }
-#d{
+.arrow-right{
     right: 0;
     opacity: 0.4;
     transition: all 0.3s ease;
 }
-#g:hover, #d:hover{
+.arrow-left:hover, .arrow-right:hover{
     transform: scale(1.1);
     opacity: 1;
     transition: all 0.3s ease;
-}
+} */
