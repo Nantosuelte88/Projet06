@@ -66,6 +66,22 @@ padding-top: 102px;
     flex-direction: column;
 }
 
+#bestMovie button {
+    cursor: pointer;
+    background-color: #3498db;
+    color: #fff;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 5px;
+    margin: 10px;
+    font-size: 16px;
+    transition: background-color 0.3s;
+    }
+    
+    #bestMovie button:hover {
+    background-color: #0077b6;
+    }
+
 /* #bestMovie button {
     display: inline-block;
     padding: 12px 24px;
@@ -105,70 +121,79 @@ button.default:hover {
 } */
 
 
-
 .box {
     flex-direction: column;
 }
 
 .box h2 {
+    text-align: center;
     color: white;
 }
 
-
 .box {
+    min-height: 400px;
     display: flex;
     overflow: hidden;
-    padding: 10px;
-    margin: 0 auto;
     background-color: rgba(128, 128, 128, 0.3); /* Gris avec une opacité de 0.5 (50%) */
+}
 
+.carousel {
+justify-content: center;
+align-items: center;
+padding: 5px;
+margin: 15px;
+}
 
-  }
-  
-  .slides-container {
-    display: flex;
-    transition: transform 0.5s ease-in-out;
-  }
-  
-  .slide {
-    justify-content: center;
-    flex: 0 0 23%;
-    padding: 8px;
-    box-sizing: border-box;
-    text-align: center;
-    overflow: hidden;
-  }
-  
+.slides-container {
+display: flex;
+transition: transform 0.5s ease-in-out;
+}
+
+.slide {
+justify-content: center;
+flex: 0 0 23%;
+padding: 10px 25px 10px 25px;
+/* box-sizing: border-box; */
+text-align: center;
+overflow: hidden;
+}
+
+/* .slide.hidden {
+    display: none;
+}
+   */
+   
 .slide img {
     width: 110%;
     padding: 5px;
+    filter: blur(0);
+    transition: filter 0.3s;
+    cursor: pointer;
 }
 
-  button {
-    cursor: pointer;
-    background-color: #3498db;
-    color: #fff;
-    border: none;
-    padding: 10px 20px;
-    border-radius: 5px;
-    margin: 10px;
-    font-size: 16px;
-    transition: background-color 0.3s;
-  }
-  
-  button:hover {
-    background-color: #0077b6;
-  }
-  
+.slide img:hover {
+    transform: scale(1.1);
+    transition: all 0.3s ease;
+}
+
+.slide.hidden img{
+    cursor: default;
+    opacity: 0.2;
+    background-color: red;
+    filter: blur(5px);
+} 
+
+.slide.slide.hidden img:hover {
+    transform: none;
+    transition: none;
+}
 
 
-
-
-/* .arrow-left, .arrow-right {
+.arrow-left, .arrow-right {
     position: absolute;
     width: 70px;
+    height: 70px;
     cursor: pointer;
-    top: 100px;
 }
 .arrow-left{
     left: 0;
@@ -184,4 +209,85 @@ button.default:hover {
     transform: scale(1.1);
     opacity: 1;
     transition: all 0.3s ease;
+}
+
+
+
+/*  Fenêtre modale */
+
+.modal-btn {
+    padding: 10px 14px;
+    font-size: 18px;
+    margin: 100px auto;
+    display: block;
+    min-width: 150px;
+    cursor: pointer;
+}
+
+.modal-container {
+    justify-content: center;
+    color: red;
+}
+
+.modal {
+    /* opacity: 0; */
+    display: flex;
+    flex-direction: row-reverse;
+    width: 95%;
+    max-width: 1000px;
+    min-width: 300px;
+    padding: 30px;
+    background: #fff;
+    /* position: absolute;
+    top: 40%;
+    left: 50%;
+    transform: translate(-50%, -50%); */
+    transition: opacity 0.4s ease-in-out;
+}
+
+.close-modal {
+    padding: 8px 10px;
+    border: none;
+    border-radius: 5px;
+    font-size: 18px;
+    /* position: absolute;
+    top: 10px;
+    right: 10px; */
+    cursor: pointer;
+    background: #ff365e;
+    color: #fff;
+    height: 35px;
+}
+
+#infoMovie {
+    justify-content: space-between;
+    flex-direction: row;
+    align-items: center;
+    background-color: aqua;
+}
+
+#infoMovie img {
+    zoom: 180%;
+}
+
+.imageInfo{
+    background-color: blueviolet;
+}
+
+.infos {
+    background-color: bisque;
+    flex-direction: column;
+}
+
+/* .overlay {
+    opacity: 0;
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    background: #333333d3;
+    transition: opacity 0.4s 0.2s ease-out;
+}
+.modal-container.active .overlay {
+    opacity: 1;
+    transition: opacity 0.4s ease-out;
 } */

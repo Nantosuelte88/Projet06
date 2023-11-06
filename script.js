@@ -43,11 +43,13 @@ async function getBestMovies() {
         var bestMovie = allBestMovies[0] 
         var bestMovieDiv = document.getElementById("bestMovie");
         var h1 = '<div><h1>' + bestMovie.title + '</h1>';
-        var btn = '<button class="default">Play</button></div>';
+        var btn = '<button id="theMovie" class="default">Play</button></div>';
         var imageBestMovie = '<img src="' + bestMovie.image_url + ' alt="' + bestMovie.title + '"></img>';
 
         htmlContent = h1 + btn + imageBestMovie;
         bestMovieDiv.innerHTML = htmlContent;
+
+        getMovieInfo(bestMovie);
 
         // Creation des 7 films suivants dans la categorie "Meilleurs films"
         displayMoviePoster(allBestMovies.slice(1, 8), 'bestMovies')
@@ -58,14 +60,14 @@ async function getBestMovies() {
 
 
 // Les 7 meilleurs films d'animation -> à verifier dans git API si il vaut mieux coupé par dat'e ou juste notes
-// async function getMoviesByGenre() {
-//     try {
-//         const moviesByGenre = await fetchMovies(7, 'http://localhost:8000/api/v1/titles/?min_year=2020&genre=animation&sort_by=-imdb_score', []);
-//         displayMoviePoster(moviesByGenre, 'genre');
-//     } catch (error) {
-//         throw error;
-//     }
-// }
+async function getMoviesByGenre() {
+    try {
+        const moviesByGenre = await fetchMovies(7, 'http://localhost:8000/api/v1/titles/?min_year=2020&genre=animation&sort_by=-imdb_score', []);
+        displayMoviePoster(moviesByGenre, 'genre');
+    } catch (error) {
+        throw error;
+    }
+}
 
 
 // // Les 7 meilleurs films de Nolan
@@ -135,13 +137,89 @@ async function getCarousel() {
 }
 
 
+async function getModal() {
+    try {
+
+        const modalContainer = document.querySelector(".modal-container");
+        const modalTriggers = document.querySelectorAll(".modal-trigger");
+        const closeModalButton = document.querySelector(".close-modal");
+        
+        modalTriggers.forEach(trigger => trigger.addEventListener("click", toggleModal))
+        closeModalButton.addEventListener("click", toggleModal);
+    
+        function toggleModal(){
+            modalContainer.classList.toggle("active")
+        };
+    } catch (error) {
+        throw error;
+    }
+
+}
+
+async function getMovieInfo(movie) {
+    console.log(movie)
+    var infoMovieDiv = document.getElementById("infoMovie");
+    var htmlContent = '';
+    var url = movie.url
+    console.log('URL ? :', url)
+
+    var xhr = new XMLHttpRequest();
+    xhr.open('GET', url, true);
+    xhr.onload = function() {
+        if (xhr.status === 200) {
+            var responsaData = JSON.parse(xhr.responseText);
+            var infosMovie = responsaData;
+
+ 
+
+            if (infosMovie) {
+
+                console.log('resultat?', infosMovie);
+
+                if (infosMovie.results = "null") {
+                    infosMovie.results = "Information non fournie";
+                }
+
+                var h1 = '<div class="infos"><h1>' + infosMovie.title + '</h1>';
+                var imgMovie = '<div class="imageInfo"><img src="' + infosMovie.image_url + ' alt="' + infosMovie.title + '"></img></div>';
+                var genre = '<p>Genre: ' + infosMovie.genres + '</p>';
+                var date = '<p>Date: ' + infosMovie.date_published + '</p>';
+                var rated = '<p>Note: ' + infosMovie.rated + '</p>'; // FZIRE IF POUR METTRE "tous publics"
+                var scoreImdb = '<p>Score imdb: ' + infosMovie.imdb_score + '</p>';
+                var director = '<p>Réalisateur.s: ' + infosMovie.director + '</p>';
+                var actors = '<ul>Acteurs: ';
+                for (var i = 0; i < infosMovie.actors.length; i++) {
+                    actors += '<li>' +infosMovie.actors[i] + '</li>';
+                };
+                var duration = '</ul><p>Durée du film: ' + infosMovie.duration + ' minutes</p>';
+                var country = '<p> Pays d\'origine: ' + infosMovie.countries + '</p>';
+                var boxOffice = '<p>Note au box office : ' + infosMovie.worlwide_gross_income + '</p>';
+                var description = '<p>Description : ' + infosMovie.description + '</p></div>';
+    
+                // console.log(h1,imgMovie, genre, date, rated, scoreImdb, director)
+    
+                htmlContent = h1 + genre + date + rated + scoreImdb + director + actors + duration + country + boxOffice + description + imgMovie;
+                infoMovieDiv.innerHTML = htmlContent;
+
+            } else {
+                console.log('Aucune information trouvée pour ce film.');
+            }
+
+
+        } else {
+            reject('Erreur de requête : ' + xhr.status);
+        }
+    };
+    xhr.send();
+}
+
 
 async function main() {
     try {
         const bestMovies = await getBestMovies();
         // console.log('Meilleurs films:', bestMovies);
 
-        // const moviesByGenre = await getMoviesByGenre();
+        const moviesByGenre = await getMoviesByGenre();
         // // console.log('Films d\'animation', moviesByGenre);
 
         // const moviesByDirector = await getMoviesByDirector();
@@ -151,6 +229,7 @@ async function main() {
         // // console.log('Les meilleurs dramas coréens', moviesByCountry)
 
         const carousel = await getCarousel();
+        await getModal();
     } catch (error) {
         console.error(error);
     }

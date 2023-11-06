@@ -20,25 +20,46 @@
     </header>
 
     <main>
-        <div id="bestMovie"></div>
 
+        <div class="modal-container">
+            <div class="overlay modal-trigger"></div>
+            <div class="modal">
+                <button class="close-modal">X</button>
+                <div id="infoMovie">
+                    <h2>Titre</h2>
+                    <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Aliquam, unde fugit soluta harum illum quae.</p>
+                </div>
+            </div>
+            <!-- <button class="modal-btn modal-trigger">Open</button> -->
+        </div>
+        <div id="bestMovie"></div>
 
         <div class="box">
             <h2>Les Meilleurs films</h2>
             <div class="carousel">
+                <img src="data/fleche-gauche.png" class="arrow-left" id="g">
                 <div id="bestMovies" class="slides-container"></div>
+                <img src="data/fleche-droite.png" class="arrow-right" id="d">
             </div>
+
             <button class="prev">Précédent</button>
             <button class="next">Suivant</button>
         </div>
 
 
-        <!-- <div class="carousel">
-            <h2>Films d'animation</h2>
-            <div id="genre"></div>
-            <img src="data/fleche-gauche.png" class="arrow-left" id="g2">
-            <img src="data/fleche-droite.png" class="arrow-right" id="d2">
+        <div class="box">
+            <div class="carousel">
+                <h2>Films d'animation</h2>
+                <img src="data/fleche-gauche.png" class="arrow-left" id="g2">
+                <div id="genre"></div>
+                <img src="data/fleche-droite.png" class="arrow-right" id="d2">
+            </div>
+
+            
+            <button class="prev">Précédent</button>
+            <button class="next">Suivant</button>
         </div>
+
 
         <div class="carousel">
             <h2>Films de Christopher Nolan</h2>
@@ -52,7 +73,7 @@
             <div id="country"></div>
             <img src="data/fleche-gauche.png" class="arrow-left" id="g4">
             <img src="data/fleche-droite.png" class="arrow-right" id="d4">
-        </div> -->
+        </div>
 
     </main>
 
