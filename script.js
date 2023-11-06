@@ -28,7 +28,7 @@ function displayMoviePoster(movies, id) {
     var moviesDiv = document.getElementById(id);
     var htmlContent = '';
     for (var i = 0; i < movies.length; i++) {
-        htmlContent += '<div class="slide"><img src="' + movies[i].image_url + '" alt="' + movies[i].title + '"></div>';
+        htmlContent += '<div class="slide"><img id="movieImage" src="' + movies[i].image_url + '" data-movie-url=' + movies[i].url + ' alt="' + movies[i].title + '"></div>';
     }
     moviesDiv.innerHTML = htmlContent;
 
@@ -43,13 +43,13 @@ async function getBestMovies() {
         var bestMovie = allBestMovies[0] 
         var bestMovieDiv = document.getElementById("bestMovie");
         var h1 = '<div><h1>' + bestMovie.title + '</h1>';
-        var btn = '<button id="theMovie" class="default">Play</button></div>';
+        var btn = '<button id="theMovie" class="default modal-btn modal-trigger">Play</button></div>';
         var imageBestMovie = '<img src="' + bestMovie.image_url + ' alt="' + bestMovie.title + '"></img>';
 
         htmlContent = h1 + btn + imageBestMovie;
         bestMovieDiv.innerHTML = htmlContent;
 
-        getMovieInfo(bestMovie);
+        getMovieInfo(bestMovie.url);
 
         // Creation des 7 films suivants dans la categorie "Meilleurs films"
         displayMoviePoster(allBestMovies.slice(1, 8), 'bestMovies')
@@ -156,11 +156,10 @@ async function getModal() {
 
 }
 
-async function getMovieInfo(movie) {
-    console.log(movie)
+async function getMovieInfo(url) {
+    console.log(url)
     var infoMovieDiv = document.getElementById("infoMovie");
     var htmlContent = '';
-    var url = movie.url
     console.log('URL ? :', url)
 
     var xhr = new XMLHttpRequest();
@@ -169,8 +168,6 @@ async function getMovieInfo(movie) {
         if (xhr.status === 200) {
             var responsaData = JSON.parse(xhr.responseText);
             var infosMovie = responsaData;
-
- 
 
             if (infosMovie) {
 
@@ -213,6 +210,18 @@ async function getMovieInfo(movie) {
     xhr.send();
 }
 
+async function getMovieForInfos() {
+    var movieImages = document.querySelectorAll('#movieImage');
+  
+    movieImages.forEach(function (movieImage) {
+      movieImage.addEventListener('click', function() {
+        var movieURL = movieImage.getAttribute('data-movie-url');
+        console.log('url bon film?', movieURL);
+        getMovieInfo(movieURL)
+      });
+    });
+  }
+
 
 async function main() {
     try {
@@ -230,6 +239,7 @@ async function main() {
 
         const carousel = await getCarousel();
         await getModal();
+        await getMovieForInfos();
     } catch (error) {
         console.error(error);
     }
