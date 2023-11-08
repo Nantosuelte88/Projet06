@@ -28,7 +28,7 @@ function displayMoviePoster(movies, id) {
     var moviesDiv = document.getElementById(id);
     var htmlContent = '';
     for (var i = 0; i < movies.length; i++) {
-        htmlContent += '<div class="slide"><img id="movieImage" src="' + movies[i].image_url + '" data-movie-url=' + movies[i].url + ' alt="' + movies[i].title + '"></div>';
+        htmlContent += '<div class="slide"><img id="movieImage" src="' + movies[i].image_url + '" data-movie-url=' + movies[i].url + ' class="modal-trigger" alt="' + movies[i].title + '"></div>';
     }
     moviesDiv.innerHTML = htmlContent;
 
@@ -44,12 +44,15 @@ async function getBestMovies() {
         var bestMovieDiv = document.getElementById("bestMovie");
         var h1 = '<div><h1>' + bestMovie.title + '</h1>';
         var btn = '<button id="theMovie" class="default modal-btn modal-trigger">Play</button></div>';
-        var imageBestMovie = '<img src="' + bestMovie.image_url + ' alt="' + bestMovie.title + '"></img>';
+        var imageBestMovie = '<img src="' + bestMovie.image_url + '" data-movie-url=' + bestMovie.url + ' class="modal-trigger" alt="' + bestMovie.title + '"></img>';
 
         htmlContent = h1 + btn + imageBestMovie;
         bestMovieDiv.innerHTML = htmlContent;
 
-        getMovieInfo(bestMovie.url);
+        var btnModal = document.querySelector(".modal-trigger");
+        btnModal.addEventListener("click", function() {
+            getMovieInfo(bestMovie.url);
+        }) ;
 
         // Creation des 7 films suivants dans la categorie "Meilleurs films"
         displayMoviePoster(allBestMovies.slice(1, 8), 'bestMovies')
@@ -115,22 +118,46 @@ function showSlide(index) {
 
 async function getCarousel() {
     try {
-        const carousel = document.querySelector('.carousel');
-
-        const prevButton = document.querySelector('.prev');
-        const nextButton = document.querySelector('.next');
-
+        const carousel = document.querySelector('.carousel-best-movies');
         slides = document.querySelectorAll('.slide');
 
-        prevButton.addEventListener('click', () => {
-            currentSlide = (currentSlide - 1 + slides.length) % slides.length;
-            showSlide(currentSlide);
+        const arrowLeft = document.getElementById('g');
+        const arrowRight = document.getElementById('d');
+
+        // function updateButtons() {
+        //     console.log('Current slide au début = ', currentSlide);
+        //     if (currentSlide === 0) {
+        //     console.log('Current slide ===0 ? -> ', currentSlide);
+
+        //         arrowLeft.classList.toggle("active");
+        //     }
+
+        //     if (currentSlide === slides.length - numVisibleSlides) {
+        //         console.log('current slide === machin chelou : ', currentSlide, slides.length, numVisibleSlides)
+        //         arrowRight.classList.toggle("active");
+        //     }
+        // }
+
+        arrowLeft.addEventListener('click', () => {
+            if (currentSlide > 0) {
+            console.log('Current slide = 0 mais dans arrowleft ', currentSlide);
+                currentSlide = (currentSlide - 1 + slides.length) % slides.length;
+                showSlide(currentSlide);
+            }
+            // updateButtons();
         });
 
-        nextButton.addEventListener('click', () => {
-            currentSlide = (currentSlide + 1) % slides.length;
-            showSlide(currentSlide);
+        arrowRight.addEventListener('click', () => {
+            if (currentSlide < slides.length - numVisibleSlides) {
+            console.log('Current slide dans arrowright ', currentSlide, slides.length, numVisibleSlides);
+
+                currentSlide = (currentSlide + 1) % slides.length;
+                showSlide(currentSlide);
+            }
+            // updateButtons();
         });
+
+        // updateButtons();
     } catch (error) {
         throw error;
     }
@@ -148,7 +175,7 @@ async function getModal() {
         closeModalButton.addEventListener("click", toggleModal);
     
         function toggleModal(){
-            modalContainer.classList.toggle("active")
+            modalContainer.classList.toggle("active");
         };
     } catch (error) {
         throw error;
