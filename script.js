@@ -1,7 +1,7 @@
 async function fetchMovies(nbrMovies, url, listMovies) {
 
-    const reponse = await fetch(url);
-    const movies = await reponse.json();
+    const response = await fetch(url);
+    const movies = await response.json();
     console.log('avant if', movies)
     console.log('results?', movies.results)
 
@@ -23,35 +23,58 @@ async function fetchMovies(nbrMovies, url, listMovies) {
 }
 
 
+
 function displayMoviePoster(movies, id) {
     var moviesDiv = document.getElementById(id);
     var htmlContent = '';
 
-    for (var i = 0; i < movies.length; i++) {
-        // htmlContent += '<div class="slide"><img src=' + movies[i].image_url + '" id="movieImage" data-movie-url=' + movies[i].url + ' class="modal-trigger" alt="' + movies[i].title + '"></div>';
+    // Fonction récursive pour charger les images une par une
+    function loadImagesSequentially(index) {
+        if (index < movies.length) {
+            var imgMovie = movies[index].image_url;
+            var image = new Image();
+            image.src = imgMovie;
 
-        var imgMovie = '<img src="' + (movies[i].image_url ?? 'data/base_movie.jpg') + '" id="movieImage" data-movie-url="' + movies[i].url + '" class="modal-trigger" alt="' + movies[i].title + '">';
-        htmlContent += '<div class="slide">' + imgMovie + '</div>';
+            image.onload = function() {
+                // console.log('Image Ok');
+                htmlContent += '<div class="slide"> <img src="' + imgMovie + '" id="movieImage" data-movie-id=' + movies[index].id + ' class="modal-trigger" alt="' + movies[index].title + '"></div>';
+                // Charger l'image suivante de manière récursive
+                loadImagesSequentially(index + 1);
+            };
 
+            image.onerror = function() {
+                // console.log("L'image n'existe pas");
+                // En cas d'erreur, utiliser l'image par défaut
+                var imgMovie = "data/base_movie.jpg";
+                htmlContent += '<div class="slide"> <img src="' + imgMovie + '" id="movieImage" data-movie-id=' + movies[index].id + ' class="modal-trigger" alt="' + movies[index].title + '"></div>';
+                // Charger l'image suivante de manière récursive
+                loadImagesSequentially(index + 1);
+            };
+        } else {
+            // Toutes les images ont été chargées, mettre à jour le contenu HTML
+            moviesDiv.innerHTML = htmlContent;
+        }
     }
-    moviesDiv.innerHTML = htmlContent;
 
+    // Commencer le chargement des images à partir de l'index 0
+    loadImagesSequentially(0);
 }
 
 // Les 8 meilleurs films [LE meilleur + les 7 suivants] -> faire fonction pour prendre le meilleur d'entre eux
 async function getBestMovies() {
-    const allBestMovies = await fetchMovies(8, 'http://localhost:8000/api/v1/titles/?imdb_score_min=9.3&sort_by=-imdb_score', []);
+    const allBestMovies = await fetchMovies(8, 'http://localhost:8000/api/v1/titles/?sort_by=-imdb_score', []);
     
     // Creation du h1 , du bouton et de l'image du meilleur film
     console.log('lesmeilleurs films ?', allBestMovies);
 
     if (allBestMovies && allBestMovies.length > 0) {
         var bestMovie = allBestMovies[0];
+        console.log('id de bestmovie???', bestMovie);
         var bestMovieDiv = document.getElementById("bestMovie");
         var h1 = '<div><h1>' + bestMovie.title + '</h1>';
         var btn = '<button id="theMovie" class="default modal-btn modal-trigger">Play</button></div>';
         var imgBestMovie = (`<img src=${bestMovie.image_url}`)??(`<img src="data/base_movie.jpg"`);
-        var imageBestMovie = imgBestMovie + '" data-movie-url=' + bestMovie.url 
+        var imageBestMovie = imgBestMovie + '" data-movie-id=' + bestMovie.id 
         + ' class="modal-trigger" alt="' + bestMovie.title + '"></img>';
 
         // var imageBestMovie = '<img src=' + bestMovie.image_url + '" data-movie-url=' + bestMovie.url 
@@ -62,7 +85,7 @@ async function getBestMovies() {
 
         var btnModal = document.querySelector(".modal-trigger");
         btnModal.addEventListener("click", function() {
-            getMovieInfo(bestMovie.url);
+            getMovieInfo(bestMovie.id);
         }) ;
 
         // Creation des 7 films suivants dans la categorie "Meilleurs films"
@@ -173,7 +196,6 @@ async function getCarousel() {
     }
 }
 
-
 async function getModal() {
     try {
 
@@ -193,58 +215,45 @@ async function getModal() {
 
 }
 
-async function getMovieInfo(url) {
-    console.log(url)
+async function getMovieInfo(id) {
+    console.log(id)
+    var url = 'http://localhost:8000/api/v1/titles/' + id;
     var infoMovieDiv = document.getElementById("infoMovie");
     var htmlContent = '';
     console.log('URL ? :', url)
+    const response = await fetch(url);
+    const infosMovie = await response.json();
 
-    var xhr = new XMLHttpRequest();
-    xhr.open('GET', url, true);
-    xhr.onload = function() {
-        if (xhr.status === 200) {
-            var responsaData = JSON.parse(xhr.responseText);
-            var infosMovie = responsaData;
+    if (infosMovie) {
 
-            if (infosMovie) {
+        console.log('resultat?', infosMovie);
+        console.log(infosMovie.title);
 
-                console.log('resultat?', infosMovie);
+        var h1 = '<div class="infos"><h1>' + infosMovie.title + '</h1>';
+        var imgMovie = '<div class="imageInfo"><img src="' + infosMovie.image_url + ' alt="' + infosMovie.title + '"></img></div>';
+        var genre = '<p>Genre: ' + infosMovie.genres + '</p>';
+        var date = '<p>Date: ' + infosMovie.date_published + '</p>';
+        var rated = '<p>Note: ' + infosMovie.rated + '</p>'; // FZIRE IF POUR METTRE "tous publics"
+        var scoreImdb = '<p>Score imdb: ' + infosMovie.imdb_score + '</p>';
+        var director = '<p>Réalisateur.s: ' + infosMovie.director + '</p>';
+        var actors = '<ul>Acteurs: ';
+        for (var i = 0; i < infosMovie.actors.length; i++) {
+            actors += '<li>' +infosMovie.actors[i] + '</li>';
+        };
+        var duration = '</ul><p>Durée du film: ' + infosMovie.duration + ' minutes</p>';
+        var country = '<p> Pays d\'origine: ' + infosMovie.countries + '</p>';
+        var boxOffice = '<p>Note au box office : ' + infosMovie.worlwide_gross_income + '</p>';
+        var description = '<p>Description : ' + infosMovie.description + '</p></div>';
 
-                if (infosMovie.results = "null") {
-                    infosMovie.results = "Information non fournie";
-                }
+        // console.log(h1,imgMovie, genre, date, rated, scoreImdb, director)
 
-                var h1 = '<div class="infos"><h1>' + infosMovie.title + '</h1>';
-                var imgMovie = '<div class="imageInfo"><img src="' + infosMovie.image_url + ' alt="' + infosMovie.title + '"></img></div>';
-                var genre = '<p>Genre: ' + infosMovie.genres + '</p>';
-                var date = '<p>Date: ' + infosMovie.date_published + '</p>';
-                var rated = '<p>Note: ' + infosMovie.rated + '</p>'; // FZIRE IF POUR METTRE "tous publics"
-                var scoreImdb = '<p>Score imdb: ' + infosMovie.imdb_score + '</p>';
-                var director = '<p>Réalisateur.s: ' + infosMovie.director + '</p>';
-                var actors = '<ul>Acteurs: ';
-                for (var i = 0; i < infosMovie.actors.length; i++) {
-                    actors += '<li>' +infosMovie.actors[i] + '</li>';
-                };
-                var duration = '</ul><p>Durée du film: ' + infosMovie.duration + ' minutes</p>';
-                var country = '<p> Pays d\'origine: ' + infosMovie.countries + '</p>';
-                var boxOffice = '<p>Note au box office : ' + infosMovie.worlwide_gross_income + '</p>';
-                var description = '<p>Description : ' + infosMovie.description + '</p></div>';
-    
-                // console.log(h1,imgMovie, genre, date, rated, scoreImdb, director)
-    
-                htmlContent = h1 + genre + date + rated + scoreImdb + director + actors + duration + country + boxOffice + description + imgMovie;
-                infoMovieDiv.innerHTML = htmlContent;
+        htmlContent = h1 + genre + date + rated + scoreImdb + director + actors + duration + country + boxOffice + description + imgMovie;
+        infoMovieDiv.innerHTML = htmlContent;
 
-            } else {
-                console.log('Aucune information trouvée pour ce film.');
-            }
+    } else {
+        console.log('Aucune information trouvée pour ce film.');
+    }
 
-
-        } else {
-            reject('Erreur de requête : ' + xhr.status);
-        }
-    };
-    xhr.send();
 }
 
 async function getMovieForInfos() {
@@ -252,13 +261,12 @@ async function getMovieForInfos() {
   
     movieImages.forEach(function (movieImage) {
       movieImage.addEventListener('click', function() {
-        var movieURL = movieImage.getAttribute('data-movie-url');
-        console.log('url bon film?', movieURL);
-        getMovieInfo(movieURL)
+        var movieID = movieImage.getAttribute('data-movie-id');
+        console.log('url bon film?', movieID);
+        getMovieInfo(movieID)
       });
     });
   }
-
 
 async function main() {
     try {
