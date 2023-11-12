@@ -1,34 +1,38 @@
-function fetchMovies(nbrMovies, url, listMovies) {
-    return new Promise((resolve, reject) => {
-        var xhr = new XMLHttpRequest();
-        xhr.open('GET', url, true);
-        xhr.onload = function() {
-            if (xhr.status === 200) {
-                var responsaData = JSON.parse(xhr.responseText);
-                var movies = responsaData.results;
+async function fetchMovies(nbrMovies, url, listMovies) {
 
-                listMovies.push(...movies);
+    const reponse = await fetch(url);
+    const movies = await reponse.json();
+    console.log('avant if', movies)
+    console.log('results?', movies.results)
 
-                if (responsaData.next) {
-                    fetchMovies(nbrMovies, responsaData.next, listMovies)
-                        .then(resolve)
-                        .catch(reject);
-                } else {
-                    resolve(listMovies.slice(0, nbrMovies));
-                }
-            } else {
-                reject('Erreur de requête : ' + xhr.status);
-            }
-        };
-        xhr.send();
-    });
+    if (movies.results) {
+        listMovies.push(...movies.results);
+
+        if (listMovies.length < nbrMovies && movies.next) {
+            console.log('taille listMovies', listMovies.length);
+            console.log('ya un nesxt', listMovies);
+            return fetchMovies(nbrMovies, movies.next, listMovies);
+
+        } else {
+            console.log('assez de films? ', listMovies.length);
+            console.log('quels films? ', listMovies);
+            console.log('test slice', listMovies.slice(0, nbrMovies))
+            return (listMovies.slice(0, nbrMovies));
+        }
+    }
 }
+
 
 function displayMoviePoster(movies, id) {
     var moviesDiv = document.getElementById(id);
     var htmlContent = '';
+
     for (var i = 0; i < movies.length; i++) {
-        htmlContent += '<div class="slide"><img id="movieImage" src="' + movies[i].image_url + '" data-movie-url=' + movies[i].url + ' class="modal-trigger" alt="' + movies[i].title + '"></div>';
+        // htmlContent += '<div class="slide"><img src=' + movies[i].image_url + '" id="movieImage" data-movie-url=' + movies[i].url + ' class="modal-trigger" alt="' + movies[i].title + '"></div>';
+
+        var imgMovie = '<img src="' + (movies[i].image_url ?? 'data/base_movie.jpg') + '" id="movieImage" data-movie-url="' + movies[i].url + '" class="modal-trigger" alt="' + movies[i].title + '">';
+        htmlContent += '<div class="slide">' + imgMovie + '</div>';
+
     }
     moviesDiv.innerHTML = htmlContent;
 
@@ -36,15 +40,22 @@ function displayMoviePoster(movies, id) {
 
 // Les 8 meilleurs films [LE meilleur + les 7 suivants] -> faire fonction pour prendre le meilleur d'entre eux
 async function getBestMovies() {
-    try {
-        const allBestMovies = await fetchMovies(8, 'http://localhost:8000/api/v1/titles/?imdb_score_min=9.3&sort_by=-imdb_score', []);
-        
-        // Creation du h1 , du bouton et de l'image du meilleur film
-        var bestMovie = allBestMovies[0] 
+    const allBestMovies = await fetchMovies(8, 'http://localhost:8000/api/v1/titles/?imdb_score_min=9.3&sort_by=-imdb_score', []);
+    
+    // Creation du h1 , du bouton et de l'image du meilleur film
+    console.log('lesmeilleurs films ?', allBestMovies);
+
+    if (allBestMovies && allBestMovies.length > 0) {
+        var bestMovie = allBestMovies[0];
         var bestMovieDiv = document.getElementById("bestMovie");
         var h1 = '<div><h1>' + bestMovie.title + '</h1>';
         var btn = '<button id="theMovie" class="default modal-btn modal-trigger">Play</button></div>';
-        var imageBestMovie = '<img src="' + bestMovie.image_url + '" data-movie-url=' + bestMovie.url + ' class="modal-trigger" alt="' + bestMovie.title + '"></img>';
+        var imgBestMovie = (`<img src=${bestMovie.image_url}`)??(`<img src="data/base_movie.jpg"`);
+        var imageBestMovie = imgBestMovie + '" data-movie-url=' + bestMovie.url 
+        + ' class="modal-trigger" alt="' + bestMovie.title + '"></img>';
+
+        // var imageBestMovie = '<img src=' + bestMovie.image_url + '" data-movie-url=' + bestMovie.url 
+        // + ' class="modal-trigger" alt="' + bestMovie.title + '"></img>'; 
 
         htmlContent = h1 + btn + imageBestMovie;
         bestMovieDiv.innerHTML = htmlContent;
@@ -56,8 +67,7 @@ async function getBestMovies() {
 
         // Creation des 7 films suivants dans la categorie "Meilleurs films"
         displayMoviePoster(allBestMovies.slice(1, 8), 'bestMovies')
-    } catch (error) {
-        throw error;
+
     }
 }
 
@@ -65,7 +75,7 @@ async function getBestMovies() {
 // Les 7 meilleurs films d'animation -> à verifier dans git API si il vaut mieux coupé par dat'e ou juste notes
 async function getMoviesByGenre() {
     try {
-        const moviesByGenre = await fetchMovies(7, 'http://localhost:8000/api/v1/titles/?min_year=2020&genre=animation&sort_by=-imdb_score', []);
+        const moviesByGenre = await fetchMovies(7, 'http://localhost:8000/api/v1/titles/?genre=animation&sort_by=-imdb_score', []);
         displayMoviePoster(moviesByGenre, 'genre');
     } catch (error) {
         throw error;
@@ -252,10 +262,10 @@ async function getMovieForInfos() {
 
 async function main() {
     try {
-        const bestMovies = await getBestMovies();
+        await getBestMovies();
         // console.log('Meilleurs films:', bestMovies);
 
-        const moviesByGenre = await getMoviesByGenre();
+        await getMoviesByGenre();
         // // console.log('Films d\'animation', moviesByGenre);
 
         // const moviesByDirector = await getMoviesByDirector();
@@ -264,7 +274,7 @@ async function main() {
         // const moviesByCountry = await getMoviesByCountry();
         // // console.log('Les meilleurs dramas coréens', moviesByCountry)
 
-        const carousel = await getCarousel();
+        await getCarousel();
         await getModal();
         await getMovieForInfos();
     } catch (error) {
