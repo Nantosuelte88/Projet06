@@ -3,21 +3,14 @@ async function fetchMovies(nbrMovies, url, listMovies) {
 
     const response = await fetch(url);
     const movies = await response.json();
-    // console.log('avant if', movies)
-    // console.log('results?', movies.results)
 
     if (movies.results) {
         listMovies.push(...movies.results);
 
         if (listMovies.length < nbrMovies && movies.next) {
-            // console.log('taille listMovies', listMovies.length);
-            // console.log('ya un nesxt', listMovies);
             return fetchMovies(nbrMovies, movies.next, listMovies);
 
         } else {
-            // console.log('assez de films? ', listMovies.length);
-            // console.log('quels films? ', listMovies);
-            // console.log('test slice', listMovies.slice(0, nbrMovies))
             return (listMovies.slice(0, nbrMovies));
         }
     }
@@ -32,7 +25,6 @@ async function displayMoviePoster(movies, id, carouselId) {
     for (var i = 0; i < movies.length; i++) {
         console.log('image url ?', movies[i].image_url);
         var imgMovie = await loadImagesSequentially(movies[i].image_url);
-        // htmlContent += '<div class="slide slide' + id + '"> <img src="' + imgMovie + '" id="movieImage" data-movie-id=' + movies[i].id + ' class="modal-trigger" alt="' + movies[i].title + '"></img></div>';
         htmlContent += '<div class="slide slide' + id + '"> <img src="' + imgMovie + '" data-movie-id=' + movies[i].id + ' class="modal-trigger movieImage" alt="' + movies[i].title + '"></img></div>';
     }
 
@@ -67,9 +59,6 @@ async function getBestMovies() {
 
     const allBestMovies = await fetchMovies(8, 'http://localhost:8000/api/v1/titles/?sort_by=-imdb_score', []);
 
-    // Creation du h1 , du bouton et de l'image du meilleur film
-    // console.log('lesmeilleurs films ?', allBestMovies);
-
     if (allBestMovies && allBestMovies.length > 0) {
         var bestMovie = allBestMovies[0];
         // console.log('id de bestmovie???', bestMovie);
@@ -81,8 +70,6 @@ async function getBestMovies() {
         var imageBestMovie = imgBestMovie + '" data-movie-id=' + bestMovie.id
             + ' class="movieImage" alt="' + bestMovie.title + '"></img>';
 
-        // var imageBestMovie = '<img src=' + bestMovie.image_url + '" data-movie-url=' + bestMovie.url 
-        // + ' class="modal-trigger" alt="' + bestMovie.title + '"></img>'; 
 
         htmlContent = h1 + btn + imageBestMovie;
         bestMovieDiv.innerHTML = htmlContent;
@@ -242,39 +229,68 @@ function initCarousel(carouselID, categorieID) {
 
 // La fenêtre modale
 
-async function getModal() {
-    console.log('FONCTION getModal');
+async function getModal(callback) {
     try {
-        return new Promise((resolve) => {
-            const modalContainer = document.querySelector(".modal-container");
-            const modalTriggers = document.querySelectorAll(".modal-trigger");
-            const closeModalButton = document.querySelector(".close-modal");
+        const modalContainer = document.querySelector(".modal-container");
+        modalContainer.classList.toggle("active");
 
-            modalTriggers.forEach(trigger => trigger.addEventListener("click", toggleModal));
-            closeModalButton.addEventListener("click", toggleModal);
+        const closeModalButton = document.querySelector(".close-modal");
+        const modalOverlay = document.querySelector(".overlay.modal-trigger");
 
-            function toggleModal() {
-                modalContainer.classList.toggle("active");
+        // Ajouter un écouteur d'événements pour le bouton de fermeture
+        closeModalButton.addEventListener("click", () => {
+            modalContainer.classList.remove("active");
+            // Appeler le callback si fourni
+            if (typeof callback === 'function') {
+                callback();
             }
-
-            resolve(); // Résoudre la promesse une fois que le modal est prêt
         });
+
+        // Ajouter un écouteur d'événements pour l'overlay
+        modalOverlay.addEventListener("click", () => {
+            modalContainer.classList.remove("active");
+            // Appeler le callback si fourni
+            if (typeof callback === 'function') {
+                callback();
+            }
+        });
+
     } catch (error) {
         throw error;
     }
 }
 
+
+async function waitForElements() {
+    return new Promise((resolve) => {
+        const intervalId = setInterval(() => {
+            const movieImages = document.querySelectorAll('.movieImage');
+            if (movieImages.length > 0) {
+                clearInterval(intervalId);
+                resolve(movieImages);
+            }
+        }, 100);
+    });
+}
+
 async function getMovieForInfos() {
-    console.log('FONCTION getMovieForInfos');
     try {
-        var movieImages = document.querySelectorAll('.movieImage');
+        const movieImages = await waitForElements();
         movieImages.forEach(movieImage => {
-            movieImage.addEventListener('click', function () {
-                var movieID = movieImage.getAttribute('data-movie-id');
+            movieImage.addEventListener('click', async function () {
+                console.log("CLICK sur image");
+                const movieID = movieImage.getAttribute('data-movie-id');
                 console.log('Quel Id ?', movieID);
-                getMovieInfo(movieID);
+
+                await getMovieInfo(movieID);
+                await getModal(() => {
+                    // Ajouter une logique ici pour exécuter après la fermeture de la modal
+                    console.log('Modal fermée');
+                });
             });
         });
+
+        console.log('Écouteurs d\'événements ajoutés pour les images.');
     } catch (error) {
         throw error;
     }
@@ -282,7 +298,6 @@ async function getMovieForInfos() {
 
 async function getMovieInfo(id) {
     console.log('FONCTION getMovieInfo');
-
     try {
         var url = 'http://localhost:8000/api/v1/titles/' + id;
         var infoMovieDiv = document.getElementById("infoMovie");
@@ -308,7 +323,7 @@ async function getMovieInfo(id) {
 
             htmlContent = h1 + genre + date + rated + scoreImdb + director + actors + duration + country + boxOffice + description + imgMovie;
             infoMovieDiv.innerHTML = htmlContent;
-            getModal(); // Assurez-vous que la fonction getModal est appelée après le chargement des informations du film.
+
         } else {
             console.log('Aucune information trouvée pour ce film.');
         }
@@ -322,17 +337,17 @@ async function main() {
     console.log('FONCTION main');
     
     try {
+        // Appeler les autres fonctions avec les films chargés
         await getBestMovies();
         await getMoviesByGenre();
         await getMoviesByDirector();
         await getMoviesByCountry();
         await getMovies2020();
 
-        // await getModal();
         await getMovieForInfos();
-        
     } catch (error) {
         console.error(error);
     }
 }
+
 main();

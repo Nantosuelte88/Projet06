@@ -248,29 +248,27 @@ overflow: hidden;
     justify-content: center;
     display: none;
     color: red;
+    z-index: 999;
 }
 
 .modal {
-    /* position: absolute; */
-
-    /* opacity: 0; */
     display: none;
-    /* display: flex; */
     flex-direction: row-reverse;
-    /* width: 95%; */
     max-width: 1055px;
-    /* min-width: 300px; */
     padding: 30px;
     background: #fff;
-    /* top: 40%;
-    left: 50%; */
-    /* transform: translate(-50%, -25%); */
-    position: absolute;
+    position: fixed;
     left: 50%;
     top: 50%;
     transform: translate(-50%, -50%);
-    transition: transform 0.3s ease-in-out;
-    transition: opacity 0.4s ease-in-out;
+    transition: transform 0.3s ease-in-out, opacity 0.4s ease-in-out;
+}
+
+.modal-container.active .modal {
+    position: absolute;
+    transform: translate(-50%, -50%);
+    display: block;
+    transition: opacity 0.4s 0.2s ease-in-out;
 }
 
 .modal-container.active {
@@ -286,15 +284,6 @@ overflow: hidden;
     z-index: 999;
   }
 
-.modal-container.active .modal {
-    position: absolute;
-    /* left: 50%;
-    top: 50%; */
-    transform: translate(-50%, -50%);
-    /* opacity: 1; */
-    display: block;
-    transition: opacity  0.4s 0.2s ease-in-out;
-}
 
 .close-modal {
     padding: 8px 10px;
