@@ -246,6 +246,7 @@ overflow: hidden;
 .modal-container {
 
     justify-content: center;
+    display: none;
     color: red;
 }
 
