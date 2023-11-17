@@ -145,12 +145,16 @@ async function getMovies2020() {
 function initCarousel(carouselID, categorieID) {
     console.log('FONCTION initCarousel');
     var slidesIDs = '.slide' + categorieID;
+    console.log(slidesIDs);
     let currentSlide = 0;
+    console.log(currentSlide);
     // let slides;
-    const numVisibleSlides = 4;
+    let numVisibleSlides;
+    console.log(numVisibleSlides);
 
     function showSlide(index) {
         console.log('FONCTION showSlide');
+        console.log(index);
 
         const slidesContainer = document.getElementById(categorieID);
         const slides = document.querySelectorAll(slidesIDs);
@@ -161,24 +165,32 @@ function initCarousel(carouselID, categorieID) {
         // slidesContainer.classList.add(translationClass);
 
         slidesContainer.style.transform = `translateX(-${25 * index}%)`;
+        const actualNumVisibleSlides = Math.min(numVisibleSlides, slides.length);
+        console.log(actualNumVisibleSlides);
 
         // Ajoutez la classe "hidden" aux images invisibles
         for (let i = 0; i < slides.length; i++) {
-            if (i < index || i >= index + numVisibleSlides) {
+            if (i < index || i >= index + actualNumVisibleSlides) {
                 slides[i].classList.add('hidden');
+                console.log('dans for -> if :', slides[i]);
 
             } else {
                 // Retirez la classe "hidden" des images visibles
                 slides[i].classList.remove('hidden');
+                console.log('dans for -> else :', slides[i]);
             }
         }
     }
-    async function getCarousel(categorieID) {
+    async function getCarousel(categorieID, slidesIDs) {
         console.log('FONCTION getCarousel');
+        console.log('categorieid', categorieID)
 
         try {
             const carousel = document.querySelector(carouselID);
-            slides = document.querySelectorAll('.slide');
+            console.log('Carousel ?',carousel);
+            slides = document.querySelectorAll(slidesIDs);
+            console.log('probleme ici ?', slides.length, slides);
+            numVisibleSlides = Math.min(4, slides.length);
 
             const arrowLeft = document.getElementById('g-' + categorieID);
             const arrowRight = document.getElementById('d-' + categorieID);
@@ -198,21 +210,19 @@ function initCarousel(carouselID, categorieID) {
             // }
 
             arrowLeft.addEventListener('click', () => {
-                if (currentSlide > 0) {
-                    console.log('Current slide = 0 mais dans arrowleft ', currentSlide);
-                    currentSlide = (currentSlide - 1 + slides.length) % slides.length;
+               
+                console.log('Left Arrow Clicked - Current Slide:', currentSlide);
+                currentSlide = (currentSlide - 1 + slides.length) % slides.length;
                     showSlide(currentSlide);
-                }
+                
                 // updateButtons();
             });
 
             arrowRight.addEventListener('click', () => {
-                if (currentSlide < slides.length - numVisibleSlides) {
-                    console.log('Current slide dans arrowright ', currentSlide, slides.length, numVisibleSlides);
-
+                console.log('Right Arrow Clicked - Current Slide:', currentSlide);
                     currentSlide = (currentSlide + 1) % slides.length;
                     showSlide(currentSlide);
-                }
+                
                 // updateButtons();
             });
 
@@ -221,7 +231,7 @@ function initCarousel(carouselID, categorieID) {
             throw error;
         }
     }
-    getCarousel(categorieID);
+    getCarousel(categorieID, slidesIDs);
     // getMovieForInfos();
     // getModal();
 }
@@ -245,9 +255,9 @@ async function getModal(callback) {
                 callback();
             }
         });
-
+//from modalOverlay to modalContainer = changer pour gerer le clic out
         // Ajouter un écouteur d'événements pour l'overlay
-        modalOverlay.addEventListener("click", () => {
+        modalContainer.addEventListener("click", () => {
             modalContainer.classList.remove("active");
             // Appeler le callback si fourni
             if (typeof callback === 'function') {
@@ -307,21 +317,21 @@ async function getMovieInfo(id) {
         const infosMovie = await response.json();
 
         if (infosMovie) {
-            var h1 = '<div class="infos"><h1>' + infosMovie.title + '</h1>';
+            var h2 = '<div class="infos"><h2>' + infosMovie.title + '</h2>';
             var imgMovieURl = await loadImagesSequentially(infosMovie.image_url);
             var imgMovie = '<div class="imageInfo"><img src="' + imgMovieURl + '" alt="' + infosMovie.title + '"></img></div>';
-            var genre = '<p>Genre: ' + infosMovie.genres + '</p>';
-            var date = '<p>Date: ' + infosMovie.date_published + '</p>';
-            var rated = '<p>Note: ' + infosMovie.rated + '</p>';
-            var scoreImdb = '<p>Score imdb: ' + infosMovie.imdb_score + '</p>';
-            var director = '<p>Réalisateur.s: ' + infosMovie.director + '</p>';
-            var actors = '<ul>Acteurs: ' + infosMovie.actors.map(actor => '<li>' + actor + '</li>').join('') + '</ul>';
+            var genre = '<div class="inline"><h3>Genre:</h3><p> ' + infosMovie.genres + '</p></div>';
+            var date = '<h3>Date:</h3><p>' + infosMovie.date_published + '</p>';
+            var rated = '<h3>Note:</h3><p> ' + infosMovie.rated + '</p>';
+            var scoreImdb = '<h3>Score imdb:</h3><p> ' + infosMovie.imdb_score + '</p>';
+            var director = '<h3>Réalisation:</h3><p> ' + infosMovie.director + '</p>';
+            var actors = '<h3>Acteurs:</h3><ul> ' + infosMovie.actors.map(actor => '<li>' + actor + '</li>').join('') + '</ul>';
             var duration = '<p>Durée du film: ' + infosMovie.duration + ' minutes</p>';
             var country = '<p> Pays d\'origine: ' + infosMovie.countries + '</p>';
             var boxOffice = '<p>Note au box office : ' + infosMovie.worlwide_gross_income + '</p>';
-            var description = '<p>Description : ' + infosMovie.description + '</p></div>';
+            var description = '<p class="description">Description : ' + infosMovie.description + '</p></div>';
 
-            htmlContent = h1 + genre + date + rated + scoreImdb + director + actors + duration + country + boxOffice + description + imgMovie;
+            htmlContent = h2 + genre + date + rated + scoreImdb + director + actors + duration + country + boxOffice + description + imgMovie;
             infoMovieDiv.innerHTML = htmlContent;
 
         } else {
@@ -342,7 +352,7 @@ async function main() {
         await getMoviesByGenre();
         await getMoviesByDirector();
         await getMoviesByCountry();
-        await getMovies2020();
+        // await getMovies2020();
 
         await getMovieForInfos();
     } catch (error) {

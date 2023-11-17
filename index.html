@@ -21,12 +21,12 @@
     <main>
 
         <div class="modal-container">
-            <div class="overlay modal-trigger"></div>
+            <!-- 
+                pas besoin au final
+                <div class="overlay modal-trigger"></div> -->
             <div class="modal">
                 <button class="close-modal">X</button>
                 <div id="infoMovie">
-                    <h2>Titre</h2>
-                    <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Aliquam, unde fugit soluta harum illum quae.</p>
                 </div>
             </div>
             <!-- <button class="modal-btn modal-trigger">Open</button> -->
@@ -34,11 +34,13 @@
         <div id="bestMovie"></div>
 
         <div class="box">
-            <h2>Les Meilleurs films</h2>
+            <h2>Films les mieux notés</h2>
             <div class="carouselBestMovies">
-                <img src="data/fleche-gauche.png" class="arrow-left active" id="g-bestMovies">
+                <div id="arrow">
+                <div  class="arrow-left active"><img src="data/fleche-gauche.png" id="g-bestMovies"></div>
+                <div  class="arrow-right active"><img src="data/fleche-droite.png"  id="d-bestMovies"></div>
+            </div>
                 <div id="bestMovies" class="slides-container"></div>
-                <img src="data/fleche-droite.png" class="arrow-right active" id="d-bestMovies">
             </div>
 
         </div>
@@ -47,9 +49,11 @@
         <div class="box">
             <h2>Films d'animation</h2>
             <div class="carouselGenre">
-                <img src="data/fleche-gauche.png" class="arrow-left active" id="g-genre">
+                <div id="arrow">
+                <div  class="arrow-left active"><img src="data/fleche-gauche.png" id="g-genre"></div>
+                <div class="arrow-right active"><img src="data/fleche-droite.png" id="d-genre"></div>
+                </div>
                 <div id="genre" class="slides-container"></div>
-                <img src="data/fleche-droite.png" class="arrow-right active" id="d-genre">
             </div>
         </div>
 
@@ -58,9 +62,12 @@
         <div class="box">
             <h2>Films de Christopher Nolan</h2>
             <div class="carouselDirector">
-                <img src="data/fleche-gauche.png" class="arrow-left active" id="g-director">
+                <div id="arrow">
+                    <div class="arrow-left active"><img src="data/fleche-gauche.png" id="g-director"></div>
+                    <div class="arrow-right active"><img src="data/fleche-droite.png" id="d-director"></div>
+                </div>
                 <div id="director" class="slides-container-director"></div>
-                <img src="data/fleche-droite.png" class="arrow-right active" id="d-director">
+                
             </div>
         </div>
 
@@ -68,9 +75,11 @@
         <div class="box">
             <h2>Dramas Coréens</h2>
             <div class="carouselCountry">
-                <img src="data/fleche-gauche.png" class="arrow-left active" id="g-country">
-                <div id="country" class="slides-container"></div>
-                <img src="data/fleche-droite.png" class="arrow-right active" id="d-country">
+                <div id="arrow">
+                    <div class="arrow-left active"><img src="data/fleche-gauche.png" id="g-country"></div>
+                    <div class="arrow-right active"><img src="data/fleche-droite.png" id="d-country"></div>
+                </div>                
+                <div id="country" class="slides-container"></div>                
             </div>
         </div>
 
