@@ -1,15 +1,22 @@
 body {
     background-color: black;
+    margin: 0px;
 }
 
 header, div {
     display: flex;
 }
+header, footer{
+    background-color: #bb2929;
+}
 header {
+
     justify-content: space-between;
     flex-direction: row;
     align-items: center;
-    background-color: rgba(47, 73, 75, 0.9);
+    /* background-color: rgba(47, 73, 75, 0.9); */
+    /* background-color: #326E66; */
+    /* background-color: #C22929; */
     padding: 5px;
 }
 
@@ -19,9 +26,11 @@ header div {
 }
 header p {
     margin: 15px;
-    color: white;
     font-weight: 600;
-    font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif
+    color: black;
+    font-size: 18px;
+    font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+    cursor: pointer;
 }
 
 header img {
@@ -29,49 +38,52 @@ header img {
     margin-left: 10%;
 }
 
-/* .content {
-    padding: 16px;
-  }
-
-.sticky {
-    position: fixed;
-    top: 0;
-    width: 100%
-  }
-
-.sticky + .content {
-padding-top: 102px;
-} */
-
+footer {
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+    height: 5em;
+    width: auto;
+    padding: 0 5em 0px 0em;
+    margin-top: 10px;
+}
 #bestMovie {
     flex-direction: row;
-    justify-content: space-around;
-    background-color: #326E66;
     align-items: center;
-    overflow: hidden;
-    padding: 3%;
-    margin: 20px 5px;
+    justify-content: space-evenly;
+    /* background-color: #326E66; */
+    /* background-color: #344B47; */
+    /* background-color: #303937; */
+    background-color: #1a1a1a;
+    padding: 1em;
+    margin: 10px 0px;
 }
 
 #bestMovie h1 {
     font-family: 'Poppins', sans-serif;
+    font-size: 3em;
+    /* text-transform: uppercase; */
+    letter-spacing: 3px;
     color: #fff;
 }
 
 #bestMovie img {
     /* transform: scale(2.5, 2.5); */
-    zoom: 190%;
+    /* zoom: 230%; */
+    width: 24%;
 }
 
 #bestMovie div {
     flex-direction: column;
+    align-items: center;
 }
 
 #bestMovie button {
     cursor: pointer;
-    background-color: #3498db;
+    background-color: #C22929;
     color: #fff;
     border: none;
+    width: max-content;
     padding: 10px 20px;
     border-radius: 5px;
     margin: 10px;
@@ -80,47 +92,10 @@ padding-top: 102px;
     }
     
 #bestMovie button:hover {
-background-color: #0077b6;
+    background-color: red;
 }
-
-/* #bestMovie button {
-    display: inline-block;
-    padding: 12px 24px;
-    font-size: 16px;
-    font-weight: bold;
-    text-align: center;
-    text-decoration: none;
-    border: none;
-    border-radius: 4px;
-    cursor: pointer;
-  } */
-
-/* button.default {
-    background-color: #3498db;
-    color: #fff;
-}
-
-button.default:hover {
-    background-color: #2980b9;
-} */
-
-
 
 /* Les differentes categories de films */
-
-/* .carousel {
-    flex-direction: column;
-    margin: 1%;
-    background-color: #579898;
-    text-align: center;
-    justify-content: center;
-}
-
-.carousel h2 {
-    display: block;
-    margin-bottom: 10px;
-} */
-
 
 .box {
     flex-direction: column;
@@ -128,15 +103,18 @@ button.default:hover {
 }
 
 .box h2 {
+    font-family: 'Poppins', sans-serif;
     text-align: center;
-    color: white;
+    color: #C22929;
+    letter-spacing: 3px;
+    padding: 15px 0px;
 }
 
 .box {
     min-height: 400px;
     display: flex;
     overflow: hidden;
-    background-color: rgba(128, 128, 128, 0.3); /* Gris avec une opacité de 0.5 (50%) */
+    background-color: rgba(128, 128, 128, 0.2); 
 }
 
 .carousel {
@@ -193,7 +171,6 @@ overflow: hidden;
 .slide.hidden img{
     cursor: default;
     opacity: 0.2;
-    background-color: red;
     filter: blur(5px);
 } 
 
@@ -255,10 +232,12 @@ overflow: hidden;
 
 .modal {
     display: none;
+    color: #fff;
+    background-color: #211f1f;
     flex-direction: row-reverse;
     width: 75%;
     padding: 30px;
-    background: #fff;
+    /* background: #fff; */
     position: fixed;
     left: 50%;
     top: 50%;
@@ -274,14 +253,14 @@ overflow: hidden;
 }
 
 .modal-container.active {
-    margin-top: 2%;
-    margin-bottom: 2%;
+    /* margin-top: 2%;
+    margin-bottom: 2%; */
     display: block;
     position: fixed;
     left: 0;
     top: -37px;
     width: 100%;
-    height: 100%;
+    height: 110%;
     background-color: rgba(0, 0, 0, 0.7);
     z-index: 999;
   }
@@ -289,14 +268,16 @@ overflow: hidden;
 
 .close-modal {
     padding: 8px 10px;
-    border: none;
+    /* border: ; */
+    border-color: #C22929;
+    border-style: solid;
     border-radius: 5px;
     /* position: absolute;
     top: 10px;
     right: 10px; */
     cursor: pointer;
     background-color: transparent;
-    color: red;
+    color: #C22929;
     height: 35px;
 /* positionner + marge le bouton de close*/
     position: absolute;
@@ -305,7 +286,7 @@ overflow: hidden;
     margin: 3em;
 }
 .close-modal:hover{
-    background: #ff365e;
+    background: #C22929;
     color:white;
 }
 #infoMovie {
@@ -318,47 +299,57 @@ overflow: hidden;
     zoom: 180%;
 }
 
-.imageInfo{
-    background-color: blueviolet;
-}
-
 .infos {
     flex-direction: column;
     padding: 0 5% 5px 5%;
     min-width: 400px;
+    min-height: 40em;
+    justify-content: space-evenly;
 }
 
+.infos .inline {
+    align-items: baseline;
+}
+.infos p, .infos ul{
+    margin-left: 7px;
+}
 .infos ul {
     padding-left: 0;
     list-style: none;
 }
-
-/* .overlay {
-    opacity: 0;
-    position: absolute;
-    width: 100%;
-    height: 100%;
-    background: #333333d3;
-    transition: opacity 0.4s 0.2s ease-out;
-} */
+.firstBox, .secondBox {
+    flex-direction: column;
+    width: 50%;
+}
 .modal-container.active .overlay {
     opacity: 1;
     transition: opacity 0.4s ease-out;
 }
 /*enlever les marges des p & des ul dans la modale, a restyliser si besoin de marges*/
 .modal * p, .modal ul{
-    margin: 0px;
+    margin-top: 0px;
+    margin-bottom: 0px;
+    margin-right: 0px;
 }
 .inline{display: inline-flex;
     align-items: center;
 }
 .description{
-    max-width: 70%;
-    width: 70%;
+    max-width: 90%;
+    width: 90%;
+    align-items: baseline;
 }
-.modal h2
-{    text-transform: uppercase;
-    letter-spacing: 4px;}
+.modal h2 {
+    color: #C22929;
+    font-size: 2em;
+    text-transform: uppercase;
+    letter-spacing: 4px;
+    /* background-color: #ff365e; */
+    text-align: center;
+    padding: 10px;
+    margin: 10px;
+}
+
 .arrow-left img, .arrow-right img{
     width: 8em;
     filter: invert(1); /*inversion des couleurs*/

@@ -23,7 +23,6 @@ async function displayMoviePoster(movies, id, carouselId) {
     var htmlContent = '';
 
     for (var i = 0; i < movies.length; i++) {
-        console.log('image url ?', movies[i].image_url);
         var imgMovie = await loadImagesSequentially(movies[i].image_url);
         htmlContent += '<div class="slide slide' + id + '"> <img src="' + imgMovie + '" data-movie-id=' + movies[i].id + ' class="modal-trigger movieImage" alt="' + movies[i].title + '"></img></div>';
     }
@@ -40,13 +39,11 @@ function loadImagesSequentially(imgUrl) {
         image.src = imgUrl;
 
         image.onload = function () {
-            console.log('Image Ok');
             resolve(imgUrl);
         };
 
         image.onerror = function () {
-            console.log("L'image n'existe pas");
-            var newImgUrl = "data/base_movie.jpg";
+            var newImgUrl = "data/image_non_valide.jpg";
             resolve(newImgUrl);
         };
     });
@@ -61,29 +58,27 @@ async function getBestMovies() {
 
     if (allBestMovies && allBestMovies.length > 0) {
         var bestMovie = allBestMovies[0];
-        // console.log('id de bestmovie???', bestMovie);
         var bestMovieDiv = document.getElementById("bestMovie");
         var h1 = '<div><h1>' + bestMovie.title + '</h1>';
         var btn = '<button id="theMovie" class="default modal-btn modal-trigger">Play</button></div>';
         var imgBestMovieURl = await loadImagesSequentially(bestMovie.image_url);
-        var imgBestMovie = '<img src="' + imgBestMovieURl ; // FAIRE UN FONCTION QUI TEST LES IMAGES
+        var imgBestMovie = '<img src="' + imgBestMovieURl ; 
         var imageBestMovie = imgBestMovie + '" data-movie-id=' + bestMovie.id
-            + ' class="movieImage" alt="' + bestMovie.title + '"></img>';
+            + ' alt="' + bestMovie.title + '"></img>';
 
 
         htmlContent = h1 + btn + imageBestMovie;
         bestMovieDiv.innerHTML = htmlContent;
 
-        // var btnModal = document.querySelector(".modal-trigger");
-
         var btnModal = document.getElementById("theMovie");
         btnModal.addEventListener("click", function () {
+            console.log("click btn meilleur film");
             getMovieInfo(bestMovie.id);
+            getModal();
         });
 
         // Creation des 7 films suivants dans la categorie "Meilleurs films"
         displayMoviePoster(allBestMovies.slice(1, 8), 'bestMovies', 'carouselBestMovies');
-        // initCarousel('carouselBestMovies', 'bestMovies');
     }
 }
 
@@ -94,7 +89,6 @@ async function getMoviesByGenre() {
     try {
         const moviesByGenre = await fetchMovies(7, 'http://localhost:8000/api/v1/titles/?genre=animation&sort_by=-imdb_score', []);
         displayMoviePoster(moviesByGenre, 'genre', 'carouselGenre');
-        // initCarousel('carouselGenre', 'genre');
     } catch (error) {
         throw error;
     }
@@ -108,7 +102,6 @@ async function getMoviesByDirector() {
     try {
         const moviesByDirector = await fetchMovies(7, 'http://localhost:8000/api/v1/titles/?director_contains=Nolan&sort_by=-imdb_score', []);
         displayMoviePoster(moviesByDirector, 'director', 'carouselDirector');
-        // initCarousel('carouselDirector', 'director');
     } catch (error) {
         throw error;
     }
@@ -122,39 +115,19 @@ async function getMoviesByCountry() {
     try {
         const moviesByCountry = await fetchMovies(7, 'http://localhost:8000/api/v1/titles/?genre_contains=drama&country_contains=korea&sort_by=-imdb_score', []);
         displayMoviePoster(moviesByCountry, 'country', 'carouselCountry');
-        // initCarousel('carouselCountry', 'country');
     } catch (error) {
         throw error;
     }
 }
-
-// Fonction TEST
-async function getMovies2020() {
-    console.log('FONCTION getMovies2020');
-    try {
-        const movies2020 = await fetchMovies(7, 'http://localhost:8000/api/v1/titles/?year=2020&sort_by=-imdb_score', []);
-        displayMoviePoster(movies2020, '2020', 'carousel2020');
-        // initCarousel('carouselCountry', 'country');
-    } catch (error) {
-        throw error;
-    }
-}
-
 
 // Le Carrousel
 function initCarousel(carouselID, categorieID) {
     console.log('FONCTION initCarousel');
     var slidesIDs = '.slide' + categorieID;
-    console.log(slidesIDs);
     let currentSlide = 0;
-    console.log(currentSlide);
-    // let slides;
     let numVisibleSlides;
-    console.log(numVisibleSlides);
 
     function showSlide(index) {
-        console.log('FONCTION showSlide');
-        console.log(index);
 
         const slidesContainer = document.getElementById(categorieID);
         const slides = document.querySelectorAll(slidesIDs);
@@ -166,74 +139,43 @@ function initCarousel(carouselID, categorieID) {
 
         slidesContainer.style.transform = `translateX(-${25 * index}%)`;
         const actualNumVisibleSlides = Math.min(numVisibleSlides, slides.length);
-        console.log(actualNumVisibleSlides);
 
         // Ajoutez la classe "hidden" aux images invisibles
         for (let i = 0; i < slides.length; i++) {
             if (i < index || i >= index + actualNumVisibleSlides) {
                 slides[i].classList.add('hidden');
-                console.log('dans for -> if :', slides[i]);
-
             } else {
                 // Retirez la classe "hidden" des images visibles
                 slides[i].classList.remove('hidden');
-                console.log('dans for -> else :', slides[i]);
             }
         }
     }
     async function getCarousel(categorieID, slidesIDs) {
-        console.log('FONCTION getCarousel');
-        console.log('categorieid', categorieID)
 
         try {
             const carousel = document.querySelector(carouselID);
-            console.log('Carousel ?',carousel);
             slides = document.querySelectorAll(slidesIDs);
-            console.log('probleme ici ?', slides.length, slides);
             numVisibleSlides = Math.min(4, slides.length);
 
             const arrowLeft = document.getElementById('g-' + categorieID);
             const arrowRight = document.getElementById('d-' + categorieID);
 
-            // function updateButtons() {
-            //     console.log('Current slide au début = ', currentSlide);
-            //     if (currentSlide === 0) {
-            //     console.log('Current slide ===0 ? -> ', currentSlide);
-
-            //         arrowLeft.classList.toggle("active");
-            //     }
-
-            //     if (currentSlide === slides.length - numVisibleSlides) {
-            //         console.log('current slide === machin chelou : ', currentSlide, slides.length, numVisibleSlides)
-            //         arrowRight.classList.toggle("active");
-            //     }
-            // }
-
             arrowLeft.addEventListener('click', () => {
                
-                console.log('Left Arrow Clicked - Current Slide:', currentSlide);
-                currentSlide = (currentSlide - 1 + slides.length) % slides.length;
+                currentSlide = (currentSlide - 1 + (slides.length - numVisibleSlides + 1)) % (slides.length - numVisibleSlides + 1);
                     showSlide(currentSlide);
-                
-                // updateButtons();
             });
 
             arrowRight.addEventListener('click', () => {
-                console.log('Right Arrow Clicked - Current Slide:', currentSlide);
-                    currentSlide = (currentSlide + 1) % slides.length;
+                currentSlide = (currentSlide + 1) % (slides.length - numVisibleSlides + 1);
                     showSlide(currentSlide);
-                
-                // updateButtons();
             });
 
-            // updateButtons();
         } catch (error) {
             throw error;
         }
     }
     getCarousel(categorieID, slidesIDs);
-    // getMovieForInfos();
-    // getModal();
 }
 
 
@@ -288,19 +230,13 @@ async function getMovieForInfos() {
         const movieImages = await waitForElements();
         movieImages.forEach(movieImage => {
             movieImage.addEventListener('click', async function () {
-                console.log("CLICK sur image");
                 const movieID = movieImage.getAttribute('data-movie-id');
-                console.log('Quel Id ?', movieID);
 
                 await getMovieInfo(movieID);
-                await getModal(() => {
-                    // Ajouter une logique ici pour exécuter après la fermeture de la modal
-                    console.log('Modal fermée');
-                });
+                await getModal();
             });
         });
 
-        console.log('Écouteurs d\'événements ajoutés pour les images.');
     } catch (error) {
         throw error;
     }
@@ -320,16 +256,16 @@ async function getMovieInfo(id) {
             var h2 = '<div class="infos"><h2>' + infosMovie.title + '</h2>';
             var imgMovieURl = await loadImagesSequentially(infosMovie.image_url);
             var imgMovie = '<div class="imageInfo"><img src="' + imgMovieURl + '" alt="' + infosMovie.title + '"></img></div>';
-            var genre = '<div class="inline"><h3>Genre:</h3><p> ' + infosMovie.genres + '</p></div>';
-            var date = '<h3>Date:</h3><p>' + infosMovie.date_published + '</p>';
-            var rated = '<h3>Note:</h3><p> ' + infosMovie.rated + '</p>';
-            var scoreImdb = '<h3>Score imdb:</h3><p> ' + infosMovie.imdb_score + '</p>';
-            var director = '<h3>Réalisation:</h3><p> ' + infosMovie.director + '</p>';
-            var actors = '<h3>Acteurs:</h3><ul> ' + infosMovie.actors.map(actor => '<li>' + actor + '</li>').join('') + '</ul>';
-            var duration = '<p>Durée du film: ' + infosMovie.duration + ' minutes</p>';
-            var country = '<p> Pays d\'origine: ' + infosMovie.countries + '</p>';
-            var boxOffice = '<p>Note au box office : ' + infosMovie.worlwide_gross_income + '</p>';
-            var description = '<p class="description">Description : ' + infosMovie.description + '</p></div>';
+            var genre = '<div class="boxes"><div class="firstBox"><div class="inline"><h3>Genre:</h3><p> ' + infosMovie.genres + '</p></div>';
+            var date = '<div class="inline"><h3>Date:</h3><p>' + infosMovie.date_published + '</p></div>';
+            var rated = '<div class="inline"><h3>Note:</h3><p>' + infosMovie.rated + '</p></div>';
+            var scoreImdb = '<div class="inline"><h3>Score imdb:</h3><p>' + infosMovie.imdb_score + '</p></div>';
+            var director = '<div class="inline"><h3>Réalisation:</h3><p>' + infosMovie.director + '</p></div></div>';
+            var actors = '<div class="secondBox"><div class="inline"><h3>Acteurs:</h3><ul>' + infosMovie.actors.map(actor => '<li>' + actor + '</li>').join('') + '</ul></div>';
+            var duration = '<div class="inline"><h3>Durée du film:</h3><p>' + infosMovie.duration + ' minutes</p></div>';
+            var country = '<div class="inline"><h3>Pays d\'origine:</h3><p>' + infosMovie.countries + '</p></div>';
+            var boxOffice = '<div class="inline"><h3>Note au box office:</h3><p>' + infosMovie.worlwide_gross_income + '</p></div></div></div>';
+            var description = '<div class="inline description"><h3>Description:</h3><p class="description">' + infosMovie.description + '</p></div></div>';
 
             htmlContent = h2 + genre + date + rated + scoreImdb + director + actors + duration + country + boxOffice + description + imgMovie;
             infoMovieDiv.innerHTML = htmlContent;
@@ -352,7 +288,6 @@ async function main() {
         await getMoviesByGenre();
         await getMoviesByDirector();
         await getMoviesByCountry();
-        // await getMovies2020();
 
         await getMovieForInfos();
     } catch (error) {
