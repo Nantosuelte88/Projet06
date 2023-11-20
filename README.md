@@ -77,8 +77,6 @@ Le site a une première section contenant le film le mieux noté selon le score 
 
 Chaque section contient les 7 meilleurs films de sa catégorie, dont 4 sont visibles initialement. Les autres sont accessibles grâce aux flèches.
 
-### Fonctionnalité
-
 ### Fonctionnalités
 
 En cliquant sur l'une des images d'un film, vous aurez accès à une fenêtre modale contenant diverses informations sur le film, telles que le titre, le score au box-office, le pays d'origine, etc. La fenêtre modale se ferme au clic.
