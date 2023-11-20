@@ -1,43 +1,49 @@
+// Fonction pour récupérer une liste de films jusqu'à un nombre spécifié
 async function fetchMovies(nbrMovies, url, listMovies) {
-    console.log('FONCTION fetchMovies')
-
-    const response = await fetch(url);
-    const movies = await response.json();
+    const response = await fetch(url); // Effectuer une requête à l'API
+    const movies = await response.json(); // Récupérer le contenu JSON de la réponse
 
     if (movies.results) {
-        listMovies.push(...movies.results);
+        listMovies.push(...movies.results); // Ajouter les films à la liste
 
+        // Récursivement, récupérer les films suivants s'il y en a et si la limite n'est pas atteinte
         if (listMovies.length < nbrMovies && movies.next) {
             return fetchMovies(nbrMovies, movies.next, listMovies);
 
         } else {
-            return (listMovies.slice(0, nbrMovies));
+            return (listMovies.slice(0, nbrMovies)); // Retourner la liste tronquée au nombre requis
         }
     }
 }
 
+// Créer les images des films dans un carrousel
 async function displayMoviePoster(movies, id, carouselId) {
-    console.log('FONCTION displayMoviePoster');
 
     var moviesDiv = document.getElementById(id);
     var htmlContent = '';
 
+    // Charger l'image de manière asynchrone
     for (var i = 0; i < movies.length; i++) {
         var imgMovie = await loadImagesSequentially(movies[i].image_url);
+
+        // Construire le contenu HTML pour chaque film
         htmlContent += '<div class="slide slide' + id + '"> <img src="' + imgMovie + '" data-movie-id=' + movies[i].id + ' class="modal-trigger movieImage" alt="' + movies[i].title + '"></img></div>';
     }
 
+    // Remplacer le contenu HTML de l'élément avec l'ID spécifié
     moviesDiv.innerHTML = htmlContent;
+
+    // Initialiser le carrousel avec l'ID spécifié
     initCarousel(carouselId, id);
 }
 
+// Vérifier l'existence d'une image à partir d'une URL
 function loadImagesSequentially(imgUrl) {
-    console.log('FONCTION loadImagesSequentially');
-
     return new Promise((resolve, reject) => {
         var image = new Image();
         image.src = imgUrl;
 
+        // Résoudre la promesse avec l'URL de l'image si chargée avec succès, sinon utiliser une image par défaut
         image.onload = function () {
             resolve(imgUrl);
         };
@@ -50,9 +56,8 @@ function loadImagesSequentially(imgUrl) {
 }
 
 
-// Les 8 meilleurs films [LE meilleur + les 7 suivants] -> faire fonction pour prendre le meilleur d'entre eux
+// Obtenir et afficher les détails du meilleur film et des 7 suivants
 async function getBestMovies() {
-    console.log('FONCTION getBestMovies');
 
     const allBestMovies = await fetchMovies(8, 'http://localhost:8000/api/v1/titles/?sort_by=-imdb_score', []);
 
@@ -60,32 +65,41 @@ async function getBestMovies() {
         var bestMovie = allBestMovies[0];
         var bestMovieDiv = document.getElementById("bestMovie");
         var h1 = '<div><h1>' + bestMovie.title + '</h1>';
-        var btn = '<button id="theMovie" class="default modal-btn modal-trigger">Play</button></div>';
+        var btn = '<button id="theMovie" class="default modal-btn modal-trigger">Play</button>';
+
+        // Obtenir les détails complets du meilleur film et construire le HTML
+        var infoForBestMovie = await getMovieDetails(bestMovie.url);
+        var description = '<p>'+ infoForBestMovie.long_description + '</p></div>';
         var imgBestMovieURl = await loadImagesSequentially(bestMovie.image_url);
         var imgBestMovie = '<img src="' + imgBestMovieURl ; 
         var imageBestMovie = imgBestMovie + '" data-movie-id=' + bestMovie.id
-            + ' alt="' + bestMovie.title + '"></img>';
+        + ' alt="' + bestMovie.title + '"></img>';
 
-
-        htmlContent = h1 + btn + imageBestMovie;
+        // Construire le contenu HTML complet
+        var htmlContent = h1 + btn + description + imageBestMovie;
         bestMovieDiv.innerHTML = htmlContent;
 
+        // Ajouter un événement au bouton 
         var btnModal = document.getElementById("theMovie");
         btnModal.addEventListener("click", function () {
-            console.log("click btn meilleur film");
             getMovieInfo(bestMovie.id);
             getModal();
         });
 
-        // Creation des 7 films suivants dans la categorie "Meilleurs films"
+        // Créer les images des 7 films suivants dans la catégorie "Meilleurs films
         displayMoviePoster(allBestMovies.slice(1, 8), 'bestMovies', 'carouselBestMovies');
     }
 }
 
+// Obtenir les détails d'un film à partir de son URL
+async function getMovieDetails(url) {
+    const response = await fetch(url);
+    return response.json();
+}
 
 // Les 7 meilleurs films d'animation
 async function getMoviesByGenre() {
-    console.log('FONCTION getMoviesByGenre');
+
     try {
         const moviesByGenre = await fetchMovies(7, 'http://localhost:8000/api/v1/titles/?genre=animation&sort_by=-imdb_score', []);
         displayMoviePoster(moviesByGenre, 'genre', 'carouselGenre');
@@ -94,10 +108,8 @@ async function getMoviesByGenre() {
     }
 }
 
-
-// // Les 7 meilleurs films de Nolan
+// Les 7 meilleurs films de Nolan
 async function getMoviesByDirector() {
-    console.log('FONCTION getMoviesByDirector');
 
     try {
         const moviesByDirector = await fetchMovies(7, 'http://localhost:8000/api/v1/titles/?director_contains=Nolan&sort_by=-imdb_score', []);
@@ -107,10 +119,8 @@ async function getMoviesByDirector() {
     }
 }
 
-
 // Les 7 meilleurs Dramas Coréens
 async function getMoviesByCountry() {
-    console.log('FONCTION getMoviesByCountry');
 
     try {
         const moviesByCountry = await fetchMovies(7, 'http://localhost:8000/api/v1/titles/?genre_contains=drama&country_contains=korea&sort_by=-imdb_score', []);
@@ -120,38 +130,40 @@ async function getMoviesByCountry() {
     }
 }
 
-// Le Carrousel
+// Initialiser le carrousel avec un identifiant et l'identifiant de la catégorie
 function initCarousel(carouselID, categorieID) {
-    console.log('FONCTION initCarousel');
+
     var slidesIDs = '.slide' + categorieID;
     let currentSlide = 0;
     let numVisibleSlides;
 
+    // Afficher une diapositive spécifique en fonction de l'index
     function showSlide(index) {
 
         const slidesContainer = document.getElementById(categorieID);
         const slides = document.querySelectorAll(slidesIDs);
 
-        //  A REVOIIIIIIIIR !!!! 
-        // slidesContainer.classList.remove('translate-0', 'translate-25', 'translate-50');
-        // const translationClass = `translate-${25 * index}`;
-        // slidesContainer.classList.add(translationClass);
+        // Retirer les classes de translation existantes
+        slidesContainer.classList.remove('translate-0', 'translate-25', 'translate-50', 'translate-75');
+        
+        // Ajouter la classe de translation en fonction de l'index
+        const translationClass = `translate-${25 * index}`;
+        slidesContainer.classList.add(translationClass);
 
-        slidesContainer.style.transform = `translateX(-${25 * index}%)`;
         const actualNumVisibleSlides = Math.min(numVisibleSlides, slides.length);
 
-        // Ajoutez la classe "hidden" aux images invisibles
+        // Masquer ou afficher les diapositives en fonction de l'index
         for (let i = 0; i < slides.length; i++) {
             if (i < index || i >= index + actualNumVisibleSlides) {
                 slides[i].classList.add('hidden');
             } else {
-                // Retirez la classe "hidden" des images visibles
                 slides[i].classList.remove('hidden');
             }
         }
     }
-    async function getCarousel(categorieID, slidesIDs) {
 
+    // Obtenir et configurer les interactions du carrousel
+    async function getCarousel(categorieID, slidesIDs) {
         try {
             const carousel = document.querySelector(carouselID);
             slides = document.querySelectorAll(slidesIDs);
@@ -160,6 +172,7 @@ function initCarousel(carouselID, categorieID) {
             const arrowLeft = document.getElementById('g-' + categorieID);
             const arrowRight = document.getElementById('d-' + categorieID);
 
+            // Événements pour naviguer à gauche et à droite
             arrowLeft.addEventListener('click', () => {
                
                 currentSlide = (currentSlide - 1 + (slides.length - numVisibleSlides + 1)) % (slides.length - numVisibleSlides + 1);
@@ -175,36 +188,32 @@ function initCarousel(carouselID, categorieID) {
             throw error;
         }
     }
+
+    // Appeler la fonction pour configurer le carrousel
     getCarousel(categorieID, slidesIDs);
 }
 
 
-// La fenêtre modale
-
+// Gérer l'affichage et la fermeture de la fenêtre modale
 async function getModal(callback) {
     try {
         const modalContainer = document.querySelector(".modal-container");
         modalContainer.classList.toggle("active");
-
         const closeModalButton = document.querySelector(".close-modal");
-        const modalOverlay = document.querySelector(".overlay.modal-trigger");
 
-        // Ajouter un écouteur d'événements pour le bouton de fermeture
+        // Ajouter un écouteur d'événements pour fermer la fenêtre modale lors du clic sur le bouton de fermeture
         closeModalButton.addEventListener("click", () => {
             modalContainer.classList.remove("active");
-            // Appeler le callback si fourni
             if (typeof callback === 'function') {
                 callback();
             }
         });
-//from modalOverlay to modalContainer = changer pour gerer le clic out
-        // Ajouter un écouteur d'événements pour l'overlay
+
         modalContainer.addEventListener("click", () => {
             modalContainer.classList.remove("active");
-            // Appeler le callback si fourni
-            if (typeof callback === 'function') {
-                callback();
-            }
+            // if (typeof callback === 'function') {
+            //     callback();
+            // }
         });
 
     } catch (error) {
@@ -212,24 +221,31 @@ async function getModal(callback) {
     }
 }
 
-
+// Attendre que les éléments avec la classe '.movieImage' soient présents dans le document
 async function waitForElements() {
     return new Promise((resolve) => {
+        // Définir un intervalle pour vérifier la présence des éléments
         const intervalId = setInterval(() => {
             const movieImages = document.querySelectorAll('.movieImage');
             if (movieImages.length > 0) {
+                // Arrêter l'intervalle et résoudre la promesse avec les éléments trouvés
                 clearInterval(intervalId);
                 resolve(movieImages);
             }
-        }, 100);
+        }, 100); // Vérifier toutes les 100 millisecondes
     });
 }
 
+// Obtenir les informations du film lors du clic sur une image
 async function getMovieForInfos() {
     try {
+        // Attendre que les éléments avec la classe '.movieImage' soient présents dans le document
         const movieImages = await waitForElements();
+
+        // Ajouter un écouteur d'événements à chaque image de film
         movieImages.forEach(movieImage => {
             movieImage.addEventListener('click', async function () {
+                // Obtenir l'identifiant du film à partir de l'attribut 'data-movie-id'
                 const movieID = movieImage.getAttribute('data-movie-id');
 
                 await getMovieInfo(movieID);
@@ -242,13 +258,15 @@ async function getMovieForInfos() {
     }
 }
 
+// Obtenir les informations détaillées d'un film en utilisant son identifiant
 async function getMovieInfo(id) {
-    console.log('FONCTION getMovieInfo');
     try {
         var url = 'http://localhost:8000/api/v1/titles/' + id;
+        console.log('Bonne url ?', url);
         var infoMovieDiv = document.getElementById("infoMovie");
         var htmlContent = '';
 
+        // Requête pour obtenir les informations du film
         const response = await fetch(url);
         const infosMovie = await response.json();
 
@@ -278,12 +296,9 @@ async function getMovieInfo(id) {
     }
 }
 
-
+// Fonction principale pour charger et afficher les films
 async function main() {
-    console.log('FONCTION main');
-    
     try {
-        // Appeler les autres fonctions avec les films chargés
         await getBestMovies();
         await getMoviesByGenre();
         await getMoviesByDirector();
