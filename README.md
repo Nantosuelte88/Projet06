@@ -11,22 +11,22 @@
 
 ## Pour commencer
 
-Ce projet est créé dans le cadre de la formation de Developpeur d'application Python proposé par [OpenClassrooms](https://openclassrooms.com/fr/).
+Ce projet est créé dans le cadre de la formation de Développeur d'application Python proposée par [OpenClassrooms](https://openclassrooms.com/fr/).
 
 ### Le projet
 
-Il est demandé de créer un site web permettant de visualiser en temps réel un classement de films.
-Il faut pour cela récuperer les données des films depuis l'API à l'aide de requete AJAX et les afficher sur le site.
+Il est demandé de créer un site web permettant de visualiser en temps réel un classement de films. 
+Il faut, pour cela, récupérer les données des films depuis l'API à l'aide de requête AJAX et les afficher sur le site.
 
-### Les exigeances  :
-  + Utiliser l'API locale fournit
-  + Utiliser du vanilla JavaScript, pas de framework autorisé
-  + Se tenir à la maquette donné
+### Les exigences :
+  + Utiliser l'API locale fournie.
+  + Utiliser du JavaScript pur (vanilla JavaScript), aucun framework autorisé.
+  + Se tenir à la maquette donnée.
   + Le site doit fonctionner de façon similaire sur au moins 3 navigateurs différents, tests effectués sur :
-    * Google Chrome
-    * Microsoft Edge
-    * Opera
-    * Mozilla Firefox
+    * Google Chrome,
+    * Microsoft Edge,
+    * Opera,
+    * Mozilla Firefox.
 
 ### Prérequis
 
@@ -34,7 +34,7 @@ Ce projet utilise une version de test de OCMovies-API créée par OpenClassrooms
 
 
 > [!IMPORTANT]
-> Necessite une version Python < 3.3 minimum.
+> Nécessite une version de Python supérieure à 3.3.
 
 
 ### Installation
@@ -61,34 +61,34 @@ $ python manage.py runserver
 
 ## Le site
 
-Vous pouvez à présent ouvrir le site dans un navigateur.
+Vous pouvez maintenant ouvrir le site dans un navigateur.
 
 <p align="center">
-  <img alt="demo site internet JustStreamIt, header et Meilleur film" src="https://github.com/Nantosuelte88/Projet06/blob/main/data/screen01.png">
+  <img alt="Démo du site JustStreamIt, en-tête et meilleur film" src="https://github.com/Nantosuelte88/Projet06/blob/main/data/screen01.png">
 </p>
 
-### Les categories
+### Les catégories
 
-Le site a une première section contenant le film le mieux noté par score IMDb,
-ensuite vous avez plusieurs categories :
-  - les films les mieux notés
-  - les films d'animation
-  - les films de Christopher Nolan
-  - les dramas Coréens
+Le site a une première section contenant le film le mieux noté selon le score IMDb. Ensuite, vous trouverez plusieurs catégories :
+  - Les films les mieux notés
+  - Les films d'animation
+  - Les films de Christopher Nolan
+  - Les dramas coréens
 
-Chaque categorie contient les 7 meilleurs films de sa categorie, 4 sont visibles, les autres sont accessibles grace aux flèches
+Chaque section contient les 7 meilleurs films de sa catégorie, dont 4 sont visibles initialement. Les autres sont accessibles grâce aux flèches.
 
 ### Fonctionnalité
 
-En cliquant sur l'une des images d'un film vous aurez accès à une fenetre modale contenant diverses informations sur le film, comme le titre, le score au box office, le pays d'origine ...
-La fenêtre modale se ferme au clic
+### Fonctionnalités
+
+En cliquant sur l'une des images d'un film, vous aurez accès à une fenêtre modale contenant diverses informations sur le film, telles que le titre, le score au box-office, le pays d'origine, etc. La fenêtre modale se ferme au clic.
 
 <p align="center">
   <img alt="Exemple d'information sur un film" src="https://github.com/Nantosuelte88/Projet06/blob/main/data/screen02.png">
 </p>
 
 
-## Langages utilisés
+## Langages Utilisés
 
 * HTML 5
 * CSS 3
