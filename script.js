@@ -276,13 +276,13 @@ async function getMovieInfo(id) {
             var imgMovie = '<div class="imageInfo"><img src="' + imgMovieURl + '" alt="' + infosMovie.title + '"></img></div>';
             var genre = '<div class="boxes"><div class="firstBox"><div class="inline"><h3>Genre:</h3><p> ' + infosMovie.genres + '</p></div>';
             var date = '<div class="inline"><h3>Date:</h3><p>' + infosMovie.date_published + '</p></div>';
-            var rated = '<div class="inline"><h3>Note:</h3><p>' + infosMovie.rated + '</p></div>';
+            var rated = '<div class="inline"><h3>Restriction d\'âge:</h3><p>' + infosMovie.rated + '</p></div>';
             var scoreImdb = '<div class="inline"><h3>Score imdb:</h3><p>' + infosMovie.imdb_score + '</p></div>';
-            var director = '<div class="inline"><h3>Réalisation:</h3><p>' + infosMovie.director + '</p></div></div>';
+            var director = '<div class="inline"><h3>Réalisation:</h3><p>' + infosMovie.directors + '</p></div></div>';
             var actors = '<div class="secondBox"><div class="inline"><h3>Acteurs:</h3><ul>' + infosMovie.actors.map(actor => '<li>' + actor + '</li>').join('') + '</ul></div>';
             var duration = '<div class="inline"><h3>Durée du film:</h3><p>' + infosMovie.duration + ' minutes</p></div>';
             var country = '<div class="inline"><h3>Pays d\'origine:</h3><p>' + infosMovie.countries + '</p></div>';
-            var boxOffice = '<div class="inline"><h3>Note au box office:</h3><p>' + infosMovie.worlwide_gross_income + '</p></div></div></div>';
+            var boxOffice = '<div class="inline"><h3>Revenu brut mondial:</h3><p>' + infosMovie.worldwide_gross_income + '</p></div></div></div>';
             var description = '<div class="inline description"><h3>Description:</h3><p class="description">' + infosMovie.description + '</p></div></div>';
 
             htmlContent = h2 + genre + date + rated + scoreImdb + director + actors + duration + country + boxOffice + description + imgMovie;
